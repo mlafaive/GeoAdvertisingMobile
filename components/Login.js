@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TextInput } from 'react-native';
-
+import { Redirect } from 'react-router-native';
 import { Button } from 'react-native-elements';
 
 export default class Login extends React.Component {
@@ -13,7 +13,8 @@ export default class Login extends React.Component {
     };
 
     this.submit = () => {
-      // run get user
+      // run get user or business info and redirect when validated
+      this.props.history.push('/user');
     }
   }
 
