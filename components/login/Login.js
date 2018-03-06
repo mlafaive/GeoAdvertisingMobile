@@ -2,25 +2,31 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Animated } from 'react-native';
 import { Button, ButtonGroup, Icon } from 'react-native-elements';
 
-import Cookie from 'react-native-cookie';
-
 const type = {
   USER: 0,
   BUSINESS: 1
 };
 
+const state = {
+  LOGIN: 0,
+  CREATE: 1
+}
+
 export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      state: state.LOGIN,
       email: '',
       password: '',
+      name: '',
+      password2: '',
       type: 'user',
       loading: false,
       login_text: 'Login',
       type: type.USER,
       iconSize: 50,
-      iconViewHeight: 150
+      iconViewHeight: 150,
     };
 
     this.submit = () => {
@@ -34,20 +40,81 @@ export default class Login extends React.Component {
       });
     }
 
-    this.create = () => {
+    this.enlarge_icon = () => {
+      var interval = setInterval(() => {
+        if (this.state.iconSize === 50) {
+          clearInterval(interval);
+          return;
+        }
+        this.setState({
+          iconSize: this.state.iconSize + 1,
+          iconViewHeight: this.state.iconViewHeight + 3
+
+        });
+      }, 10);
+    }
+
+    this.shrink_icon = () => {
+      var interval = setInterval(() => {
+        if (this.state.iconSize === 25) {
+          clearInterval(interval);
+          return;
+        }
+        this.setState({
+          iconSize: this.state.iconSize - 1,
+          iconViewHeight: this.state.iconViewHeight - 3
+
+        });
+      }, 10);
+    }
+
+    this.change_state = () => {
       // animation
-      // var interval = setInterval(() => {
-      //   if (this.state.iconSize === 25) {
-      //     clearInterval(interval);
-      //     return;
-      //   }
-      //   this.setState({
-      //     iconSize: this.state.iconSize - 1,
-      //     iconViewHeight: this.state.iconViewHeight - 3
+      if (this.state.state === state.LOGIN) {
+        this.setState({
+          state: state.CREATE,
+          login_text: 'Sign Up'
+        });
+        this.shrink_icon();
+      }
+      else {
+        this.setState({
+          state: state.LOGIN,
+          login_text: 'Login'
+        });
+        this.enlarge_icon();
+      }
 
-      //   });
-      // }, 10);
+    }
 
+    this.create_input = (i, placeholder, field) => {
+      return (
+        <View key={i} style={styles.inputView}>
+            <TextInput
+              style={styles.input}
+              textAlign='center'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder={placeholder}
+              onChangeText={(input) => this.setState({[field]: input})}
+            />
+          </View>
+      );
+    }
+
+    this.render_inputs = () => {
+      let items = [];
+      if (this.state.state === state.CREATE) {
+        items.push(this.create_input(0, 'name', 'name'));
+      }
+
+      items.push(this.create_input(1, 'email', 'email'));
+      items.push(this.create_input(2, 'password', 'password'));
+
+      if (this.state.state === state.CREATE){
+        items.push(this.create_input(3, 're-enter password', 'password2'));
+      }
+      return items;
     }
   }
 
@@ -78,25 +145,7 @@ export default class Login extends React.Component {
             containerStyle={styles.typeButtons} 
           />
         </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.input}
-            textAlign='center'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder="email"
-            onChangeText={(email) => this.setState({email: email})}
-          />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.input}
-            textAlign={'center'}
-            secureTextEntry={true}
-            placeholder="password"
-            onChangeText={(password) => this.setState({password: password})}
-          />
-        </View>
+        { this.render_inputs() }
         <View style={styles.submitView}>
           <Button
             raised
@@ -110,12 +159,16 @@ export default class Login extends React.Component {
           />
         </View>
         <View style={styles.createView}>
-          <Text style={styles.createText}>New?</Text> 
+          <Text style={styles.createText}>
+            {this.state.state === state.LOGIN ? 'New?' : 'Already have an account?'}
+          </Text> 
           <TouchableHighlight 
             style={styles.createButton}
-            onPress={this.create}
+            onPress={this.change_state}
           >
-            <Text style={styles.createButtonText}>Sign Up</Text>
+            <Text style={styles.createButtonText}>
+              {this.state.state === state.LOGIN ? 'Sign Up' : 'Login'}
+            </Text>
           </TouchableHighlight>
         </View>
         <View style={styles.footer}>
@@ -135,8 +188,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#001f3f'
   },
   typeView: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    alignItems: 'center',
   },
   typeButtons: {
     width: 200,
@@ -149,7 +201,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF'
   },
   selectedTypeText: {
-    color: '#001f3f'
+    color: '#001f3f',
+    fontWeight: '900'
   },
   type: {
     backgroundColor: '#001f3f'
@@ -162,13 +215,12 @@ const styles = StyleSheet.create({
     fontSize: 25
   },
   iconView: {
-    paddingTop: 20,
-    paddingBottom: 10,
+    paddingTop: 15,
     alignItems: 'center',
     justifyContent: 'center'
   },
   inputView: {
-    paddingTop: 20,
+    paddingTop: 10,
     paddingRight: 25,
     paddingLeft: 25,
   },
@@ -181,7 +233,7 @@ const styles = StyleSheet.create({
     borderColor: '#d6d7da',
   },
   submitView: {
-    paddingTop: 25,
+    paddingTop: 15,
     paddingRight: 80,
     paddingLeft: 80,
   },
@@ -201,7 +253,7 @@ const styles = StyleSheet.create({
   createView: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 20,
+    paddingTop: 5,
   },
   createText: {
     fontSize: 15,

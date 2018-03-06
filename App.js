@@ -3,8 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { NativeRouter as Router, Route, Switch } from 'react-router-native';
 
-import Login from './components/Login.js';
-import User from './components/User.js';
+import Login from './components/login/Login.js';
+import User from './components/user/User.js';
 
 export default class App extends React.Component {
   render() {
