@@ -3,15 +3,6 @@ import { StyleSheet } from 'react-native';
 export default styles = StyleSheet.create({
 	container: {
 	    flex: 1,
+	    backgroundColor: '#DDDDDD'
 	 },
-	 headerView: {
-	 	alignItems: 'center',
-	 	paddingTop: 10,
-	 	paddingBottom: 10
-	 },
-	 header: {
-	 	fontSize: 20,
-	 	fontWeight: '900',
-	 	color: '#001f3f'
-	 }
 });

@@ -53,7 +53,7 @@ class HeaderView extends React.Component {
           />
         </View>
         { this.props.children }
-        <Menu ref={ref => { this.menu = ref }}/>
+        <Menu history={this.props.history} ref={ref => { this.menu = ref }}/>
       </View>
     );
   }
