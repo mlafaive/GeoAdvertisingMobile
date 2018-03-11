@@ -1,5 +1,10 @@
 import { StyleSheet } from 'react-native';
 
+import Dimensions from 'Dimensions';
+
+var screenSize = Dimensions.get('window').width
+var menuWidth = (screenSize*2)/3;
+
 export default styles = StyleSheet.create({
 	hidden: {
 	  	display: 'none'
@@ -14,13 +19,28 @@ export default styles = StyleSheet.create({
 		bottom: 0,
 	},
 	menu: {
-		backgroundColor: '#7FDBFF',
+		backgroundColor: '#001f3f',
 		alignItems: 'center',
 		paddingTop: 20,
-		overflow: 'hidden'
+		overflow: 'hidden',
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		width: menuWidth,
+		opacity: 0.75
+	},
+	buttonView: {
+		width: menuWidth - 10,
+		paddingLeft: 5,
+		paddingRight: 5,
+		paddingTop: 15,
+	},
+	button: {
+		padding: 15
 	},
 	menuText: {
-		color: '#001f3f'
+		color: '#FFFFFF',
+		fontWeight: '900',
 	},
 	overlay: {
 		backgroundColor: '#7FDBFF',

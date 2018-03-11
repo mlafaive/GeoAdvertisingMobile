@@ -51,7 +51,7 @@ export default class Login extends React.Component {
       //   return;
       // }
       // console.warn('valid request');
-      this.props.history.push('/user');
+      this.props.history.push('/offers');
 
     }
 
