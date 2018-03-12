@@ -9,7 +9,7 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: false,
+      editingName: false,
       changePass: false,
       name: 'John',
       email: 'john@gmail.com',
@@ -26,9 +26,9 @@ class Settings extends React.Component {
       checked4: true
     };
 
-    this.edit = () => {
+    this.editName = () => {
       this.setState({
-        editing: !this.state.editing
+        editingName: !this.state.editingName
       });
     }
 
@@ -39,7 +39,7 @@ class Settings extends React.Component {
     }
 
     this.fillText = (type) => {
-      if(this.state.editing)
+      if(this.state.editingName)
       {
         return (
         <TextInput 
@@ -124,27 +124,25 @@ class Settings extends React.Component {
     }
 }
   render() {
+    console.warn(this.state.newPassword1)
     return (
         <HeaderView style={styles.container} history={this.props.history}>
           <View style={styles.screen}>
-            <View style={styles.settingsRow} >
-              <Text style={styles.blank} > </Text>
-              <Text style={styles.settings}>Settings</Text>
+            <Text style={styles.settings}>Settings</Text>
+            <View style={styles.rowsView}> 
+              <Text style={styles.rows}>Name: </Text>
+              { this.fillText('name') }
               <Button 
                 borderRadius={5}
                 buttonStyle={styles.button}
                 textStyle={styles.buttonText}
-                title={this.state.editing ? 'Save Account' : 'Edit Account'}
-                onPress={this.edit}
+                title={this.state.editingName ? 'Save' : ' Edit '}
+                onPress={this.editName}
               />
             </View>
             <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Name: </Text>
-              { this.fillText('name') }
-            </View>
-            <View style={styles.rowsView}> 
               <Text style={styles.rows}>Email: </Text>
-              { this.fillText('email') }
+              <Text style={styles.inputEmail}>{this.state.email}</Text>
             </View>
             <View style={styles.rowsView} >
               <Text style={styles.rows}>Interests: </Text>

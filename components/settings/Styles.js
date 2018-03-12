@@ -14,10 +14,8 @@ export default styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 25,
 		paddingBottom: 10,
-		flex: 1
 	},
 	settingsRow: {
-		flexDirection: 'row',
 		height: 35
 	},
 	blank: {
@@ -47,6 +45,11 @@ export default styles = StyleSheet.create({
 		fontSize: 17,
 		flex:2
 	},
+	inputEmail: {
+		paddingLeft: 10,
+		fontSize: 17,
+		flex:3,
+	},
 	inputBox: {
     	backgroundColor: '#FFFFFF',
     	height: 24,
@@ -64,7 +67,7 @@ export default styles = StyleSheet.create({
   	},
   	passwordInputBox: {
   		backgroundColor: '#FFFFFF',
-    	height: 24,
+    	height: 25,
     	fontSize: 17,
     	borderRadius: 10,
     	borderWidth: 0.5,
