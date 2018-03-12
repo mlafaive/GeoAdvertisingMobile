@@ -30,8 +30,8 @@ class Settings extends React.Component {
             textAlign='left'
             autoCapitalize='none'
             autoCorrect={false}
-            placeholder={this.state[type]}
             value={this.state[type]}
+            onChangeText={(input) => this.setState({[type]: input})}
             />);
       }
       else

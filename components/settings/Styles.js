@@ -24,7 +24,8 @@ export default styles = StyleSheet.create({
 		flex: 1,
 	},
 	rowsView: {
-    	paddingLeft: 25,
+    	paddingLeft: 15,
+    	paddingRight: 15,
     	height: 35,
     	flexDirection: 'row',
 	},
@@ -44,7 +45,7 @@ export default styles = StyleSheet.create({
 	inputText: {
 		paddingLeft: 10,
 		fontSize: 17,
-		flex:2.5
+		flex:2
 	},
 	inputBox: {
     	backgroundColor: '#FFFFFF',
@@ -53,7 +54,7 @@ export default styles = StyleSheet.create({
     	borderRadius: 10,
     	borderWidth: 0.5,
     	borderColor: '#d6d7da',
-    	flex: 2.5,
+    	flex: 2,
     	paddingLeft: 10
   	},
 });
