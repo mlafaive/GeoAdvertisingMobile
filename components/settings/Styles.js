@@ -14,7 +14,7 @@ export default styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 25,
 		paddingBottom: 10,
-		flex: 2
+		flex: 1
 	},
 	settingsRow: {
 		flexDirection: 'row',
@@ -25,9 +25,9 @@ export default styles = StyleSheet.create({
 	},
 	rowsView: {
     	paddingLeft: 15,
-    	paddingRight: 15,
     	height: 35,
     	flexDirection: 'row',
+    	alignItems: 'baseline',
 	},
 	rows: {
     	fontSize: 18,
@@ -55,6 +55,39 @@ export default styles = StyleSheet.create({
     	borderWidth: 0.5,
     	borderColor: '#d6d7da',
     	flex: 2,
-    	paddingLeft: 10
+    	paddingLeft: 5
+  	},
+  	passwordBox: {
+  		flexDirection: 'column',
+  		padding: 10,
+  		paddingBottom: 20,
+  	},
+  	passwordInputBox: {
+  		backgroundColor: '#FFFFFF',
+    	height: 24,
+    	fontSize: 17,
+    	borderRadius: 10,
+    	borderWidth: 0.5,
+    	borderColor: '#d6d7da',
+    	flex: 1,
+    	padding: 15,
+    	color: '#000000'
+  	},
+  	passwordRowsView: {
+  		paddingTop: 10,
+  		paddingLeft: 15,
+    	paddingRight: 15,
+    	height: 40,
+    	flexDirection: 'column',
+  	},
+  	passwordsSpacing: {
+  		padding: 5,
+  	},
+  	individualInterestsRow: {
+  		flexDirection: 'row',
+  		justifyContent: 'center'
+  	},
+  	individualInterests: {
+  		flex: 1,
   	},
 });
