@@ -31,7 +31,6 @@ class Settings extends React.Component {
       email: this.props.email,
       newPassword1: '',
       newPassword2: '',
-      newPassword: '',
       interests: [],
       checked1: true,
       checked2: false,
@@ -88,7 +87,7 @@ class Settings extends React.Component {
         this.setState({
           changePass: !this.state.changePass,
         });
-        this.state.passButtonText = 'Save New Password';
+        this.state.passButtonText = 'Save';
       }
       if (this.state.changePass) {
         if (this.state.newPassword1 != this.state.newPassword2) {
@@ -140,36 +139,18 @@ class Settings extends React.Component {
     }
 
     this.interests = () => {
+      var interests = '';
+      for (var i = 0; i < this.state.interests.length; i++) {
+        interests += this.state.interests[i].name;
+        if (i + 1 !== this.state.interests.length) {
+          interests += ', ';
+        }
+      }
       return (
-        <View>
-          <View style={styles.individualInterestsRow} >
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest1'
-              checked={this.state.checked1}
-              onPress={() => this.setState({ checked1: !this.state.checked1 })}
-            />
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest2'
-              checked={this.state.checked2}
-              onPress={() => this.setState({ checked2: !this.state.checked2 })}
-            />
-          </View>
-          <View style={styles.individualInterestsRow} >
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest3'
-              checked={this.state.checked3}
-              onPress={() => this.setState({ checked3: !this.state.checked3 })}
-            />
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest4'
-              checked={this.state.checked4}
-              onPress={() => this.setState({ checked4: !this.state.checked4 })}
-            />
-          </View>
+        <View style={styles.individualInterestsRow}>
+          <Text style={styles.individualInterests}>
+          { interests }  
+          </Text>
         </View>
       );
     }
@@ -187,7 +168,8 @@ class Settings extends React.Component {
               autoCorrect={false}
               placeholder='Enter new password'
               value={this.state.newPassword1}
-              onChangeText={(input) => this.setState({ newPassword1: input})}
+              onChangeText={(input) => this.setState({ newPassword1: input, error: ''})}
+              secureTextEntry={true}
               />
             </View>
             <View style={styles.passwordsSpacing}>
@@ -198,13 +180,41 @@ class Settings extends React.Component {
               autoCorrect={false}
               placeholder='Re-enter new password'
               value={this.state.newPassword2}
-              onChangeText={(input) => this.setState({ newPassword2: input})}
+              onChangeText={(input) => this.setState({ newPassword2: input, error: ''})}
+              secureTextEntry={true}
               />
             </View>
           </View>
         );
       }
     }
+
+    this.passwordButton = () => {
+      if(this.state.changePass) {
+        return (
+          <Button
+            borderRadius={5}
+            buttonStyle={styles.button}
+            textStyle={styles.buttonText}
+            title={"Cancel"}
+            onPress={this.passwordCancel}
+          />
+          );
+      }
+    }
+
+    this.passwordCancel = () => {
+      this.setState({
+          changePass: !this.state.changePass,
+          newPassword1: '',
+          newPassword2: '',
+          passButtonText: ' Change Password ',
+          error: ''
+        });
+    }
+
+
+
   }
   render() {
     return (
@@ -235,21 +245,27 @@ class Settings extends React.Component {
               </View>
               <View style={styles.rowsView} >
                 <Text style={styles.rows}>Interests: </Text>
+                { this.interests() }
               </View>
-              { this.interests() }
               <View style={styles.passwordRowsView}> 
-                <Button 
+                <View style={styles.passwordButtonStyle}>
+                  <Button 
                     borderRadius={5}
                     buttonStyle={styles.button}
                     textStyle={styles.buttonText}
                     title={this.state.passButtonText}
                     loading={this.state.loadingPass}
+                    loadingProps={{ color: "#111111" }}
                     onPress={this.openPasswordChange}
-                />
+                  />
+                  { this.passwordButton() }
+                </View>
                 { this.changePassword() }
-                <Text style={styles.error} >
-                  {this.state.error}
-                </Text>
+                <View style={styles.errorView} >
+                  <Text style={styles.error} >
+                    {this.state.error}
+                  </Text>
+                </View>
               </View>
             </View>
           }
@@ -277,3 +293,34 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
+
+
+
+/*
+<CheckBox 
+              style={styles.individualInterests}
+              title='interest1'
+              checked={this.state.checked1}
+              onPress={() => this.setState({ checked1: !this.state.checked1 })}
+            />
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest2'
+              checked={this.state.checked2}
+              onPress={() => this.setState({ checked2: !this.state.checked2 })}
+            />
+          </View>
+          <View style={styles.individualInterestsRow} >
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest3'
+              checked={this.state.checked3}
+              onPress={() => this.setState({ checked3: !this.state.checked3 })}
+            />
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest4'
+              checked={this.state.checked4}
+              onPress={() => this.setState({ checked4: !this.state.checked4 })}
+            />
+*/

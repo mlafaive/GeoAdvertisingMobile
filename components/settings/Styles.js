@@ -11,7 +11,10 @@ export default styles = StyleSheet.create({
 	},
 	loader: {
 	 	flex: 1,
-	 	justifyContent: 'center'
+	 	justifyContent: 'center',
+	},
+	passLoader: {
+		backgroundColor: '#111111',
 	},
 	settings: {
 		textAlign: 'center',
@@ -79,19 +82,30 @@ export default styles = StyleSheet.create({
 	passwordRowsView: {
 		paddingTop: 10,
 		paddingLeft: 15,
-  	paddingRight: 15,
+  		paddingRight: 15,
 	},
 	passwordsSpacing: {
 		padding: 5,
 	},
-	individualInterestsRow: {
+	passwordButtonStyle: {
 		flexDirection: 'row',
-		justifyContent: 'center'
+		justifyContent: 'center',
+	},
+	individualInterestsRow: {
+		paddingLeft: 10,
+		justifyContent: 'flex-start',
+		flex: 3
 	},
 	individualInterests: {
-		flex: 1,
+		fontSize: 17,
 	},
 	error: {
-		color: 'red',
+		color: '#85144b',
+    	fontSize: 12,
+    	fontWeight: '900',
+    	fontStyle: 'italic'
+	},
+	errorView: {
+		alignItems: 'center'
 	}
 });
