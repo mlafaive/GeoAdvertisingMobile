@@ -9,6 +9,10 @@ export default styles = StyleSheet.create({
 		backgroundColor: '#ffffff',
 		flex: 1,
 	},
+	loader: {
+	 	flex: 1,
+	 	justifyContent: 'center'
+	},
 	settings: {
 		textAlign: 'center',
 		fontWeight: 'bold',

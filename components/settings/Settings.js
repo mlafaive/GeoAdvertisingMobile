@@ -1,40 +1,118 @@
 import React from 'react';
-import { Text, View, TextInput } from 'react-native';
+import { Text, View, TextInput, ActivityIndicator} from 'react-native';
 import { Button, ButtonGroup, CheckBox, Icon } from 'react-native-elements';
+
 import HeaderView from '../header_view/HeaderView.js';
+
 import PropTypes from 'prop-types';
 import styles from './Styles.js';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setAccessToken } from '../../actions/token.js';
+
+import { GET, POST , PATCH } from '../../fetch_wrapper/FetchWrapper.js';
 
 class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loadingPage: true,
+
+      loadingName: false,
       editingName: false,
+      editNameText: ' Edit ',
+      name: '',
       changePass: false,
-      name: 'John',
-      email: 'john@gmail.com',
+      loadingPass: false,
+      passButtonText: ' Change Password ',
+      error: '',
+
+      email: this.props.email,
       newPassword1: '',
       newPassword2: '',
-      interest1: true,
-      interest2: false,
-      interest3: true,
-      interest4: true,
+      newPassword: '',
+      interests: [],
       checked1: true,
       checked2: false,
       checked3: true,
       checked4: true
     };
 
+
+    this.get_info = () => {
+
+      GET('/users/'+this.props.email)
+      .then((data) => {
+        this.setState({
+          name: data.name,
+          interests: data.interests,
+          loadingPage: false
+        });
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+    }
+
+    this.get_info();
+
     this.editName = () => {
       this.setState({
         editingName: !this.state.editingName
       });
+
+      if (!this.state.editingName) {
+        this.state.editNameText = 'Save';
+      }
+
+      if (this.state.editingName) {
+        this.state.editNameText = '';
+        this.state.loadingName = true;
+        PATCH('/users/'+this.props.email, {name: this.state.name})
+        .then((data) => {
+          this.setState({
+            editNameText: ' Edit ',
+            loadingName: false
+          });
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
+      } 
     }
 
     this.openPasswordChange = () => {
+      if (this.state.newPassword1 != this.state.newPassword2) {
+        this.setState({error: 'passwords do not match!'});
+        return;
+      }
+      if (this.state.newPassword1 == '') {
+        this.setState({error: 'password fields are empty!'});
+        return;
+      }
+
       this.setState({
-        changePass: !this.state.changePass
+        changePass: !this.state.changePass,
+        newPassword: this.state.newPassword1
       });
+      if (!this.state.changePass) {
+        this.state.passButtonText = 'Save New Password';
+      }
+      if (this.state.changePass) {
+        this.state.passButtonText = '';
+        this.state.loadingPass = true;
+        PATCH('/users/'+this.props.email, {password: this.state.newPassword})
+        .then((data) => {
+          this.setState({
+            passButtonText: ' Change Password ',
+            loadingPass: false
+          });
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
+      }
     }
 
     this.fillText = (type) => {
@@ -122,41 +200,51 @@ class Settings extends React.Component {
         );
       }
     }
-}
+  }
   render() {
     return (
         <HeaderView style={styles.container} history={this.props.history}>
           <View style={styles.screen}>
-            <Text style={styles.settings}>Settings</Text>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Name: </Text>
-              { this.fillText('name') }
-              <Button 
-                borderRadius={5}
-                buttonStyle={styles.button}
-                textStyle={styles.buttonText}
-                title={this.state.editingName ? 'Save' : ' Edit '}
-                onPress={this.editName}
-              />
+          { this.state.loadingPage ?
+            <View style={styles.loader}>
+              <ActivityIndicator size='large' color="#001f3f" />
             </View>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Email: </Text>
-              <Text style={styles.inputEmail}>{this.state.email}</Text>
-            </View>
-            <View style={styles.rowsView} >
-              <Text style={styles.rows}>Interests: </Text>
-            </View>
-            { this.interests() }
-            <View style={styles.passwordRowsView}> 
-              <Button 
+            :
+            <View>
+              <Text style={styles.settings}>Settings</Text>
+              <View style={styles.rowsView}> 
+                <Text style={styles.rows}>Name: </Text>
+                { this.fillText('name') }
+                <Button 
                   borderRadius={5}
                   buttonStyle={styles.button}
                   textStyle={styles.buttonText}
-                  title={this.state.changePass ? 'Save New Password' : ' Change Password '}
-                  onPress={this.openPasswordChange}
-              />
-              { this.changePassword() }
+                  title={this.state.editNameText}
+                  loading={this.state.loadingName}
+                  onPress={this.editName}
+                />
+              </View>
+              <View style={styles.rowsView}> 
+                <Text style={styles.rows}>Email: </Text>
+                <Text style={styles.inputEmail}>{this.state.email}</Text>
+              </View>
+              <View style={styles.rowsView} >
+                <Text style={styles.rows}>Interests: </Text>
+              </View>
+              { this.interests() }
+              <View style={styles.passwordRowsView}> 
+                <Button 
+                    borderRadius={5}
+                    buttonStyle={styles.button}
+                    textStyle={styles.buttonText}
+                    title={this.state.passButtonText}
+                    loading={this.state.loadingPass}
+                    onPress={this.openPasswordChange}
+                />
+                { this.changePassword() }
+              </View>
             </View>
+          }
           </View>
         </HeaderView>
     );
@@ -167,4 +255,17 @@ Settings.propTypes = {
 
 };
 
-export default Settings;
+function mapStateToProps(state) {
+  return {
+    token: state.token,
+    email: state.email
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setAccessToken
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);
