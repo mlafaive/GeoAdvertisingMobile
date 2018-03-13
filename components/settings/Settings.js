@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, TextInput } from 'react-native';
-import { Button, ButtonGroup, Icon } from 'react-native-elements';
+import { Button, ButtonGroup, CheckBox, Icon } from 'react-native-elements';
 import HeaderView from '../header_view/HeaderView.js';
 import PropTypes from 'prop-types';
 import styles from './Styles.js';
@@ -9,69 +9,154 @@ class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: false,
+      editingName: false,
+      changePass: false,
       name: 'John',
       email: 'john@gmail.com',
       password: '123hackme',
-      interests: 'none'
+      newPassword1: '',
+      newPassword2: '',
+      interest1: true,
+      interest2: false,
+      interest3: true,
+      interest4: true,
+      checked1: true,
+      checked2: false,
+      checked3: true,
+      checked4: true
     };
 
-    this.edit = () => {
+    this.editName = () => {
       this.setState({
-        editing: !this.state.editing
+        editingName: !this.state.editingName
+      });
+    }
+
+    this.openPasswordChange = () => {
+      this.setState({
+        changePass: !this.state.changePass
       });
     }
 
     this.fillText = (type) => {
-      if(this.state.editing)
+      if(this.state.editingName)
       {
-          return (<TextInput 
-            style={styles.inputBox}
-            textAlign='left'
-            autoCapitalize='none'
-            autoCorrect={false}
-            value={this.state[type]}
-            onChangeText={(input) => this.setState({[type]: input})}
-            />);
+        return (
+        <TextInput 
+          style={styles.inputBox}
+          textAlign='left'
+          autoCapitalize='none'
+          autoCorrect={false}
+          value={this.state[type]}
+          onChangeText={(input) => this.setState({[type]: input})}
+          />);
       }
       else
       {
-          return (<Text style={styles.inputText}>{this.state[type]}</Text>);
+        return (<Text style={styles.inputText}>{this.state[type]}</Text>);
       }
-  }
+    }
+
+    this.interests = () => {
+      return (
+        <View>
+          <View style={styles.individualInterestsRow} >
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest1'
+              checked={this.state.checked1}
+              onPress={() => this.setState({ checked1: !this.state.checked1 })}
+            />
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest2'
+              checked={this.state.checked2}
+              onPress={() => this.setState({ checked2: !this.state.checked2 })}
+            />
+          </View>
+          <View style={styles.individualInterestsRow} >
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest3'
+              checked={this.state.checked3}
+              onPress={() => this.setState({ checked3: !this.state.checked3 })}
+            />
+            <CheckBox 
+              style={styles.individualInterests}
+              title='interest4'
+              checked={this.state.checked4}
+              onPress={() => this.setState({ checked4: !this.state.checked4 })}
+            />
+          </View>
+        </View>
+      );
+    }
+
+    this.changePassword = () => {
+      if(this.state.changePass)
+      {
+        return (
+          <View style={styles.passwordBox}>
+            <View style={styles.passwordsSpacing}>
+              <TextInput 
+              style={styles.passwordInputBox}
+              textAlign='left'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='Enter new password'
+              value={this.state.newPassword1}
+              onChangeText={(input) => this.setState({ newPassword1: input})}
+              />
+            </View>
+            <View style={styles.passwordsSpacing}>
+              <TextInput 
+              style={styles.passwordInputBox}
+              textAlign='left'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='Re-enter new password'
+              value={this.state.newPassword2}
+              onChangeText={(input) => this.setState({ newPassword2: input})}
+              />
+            </View>
+          </View>
+        );
+      }
+    }
 }
   render() {
     return (
         <HeaderView style={styles.container} history={this.props.history}>
           <View style={styles.screen}>
-
-
-            <View style={styles.settingsRow} >
-              <Text style={styles.blank} > </Text>
-              <Text style={styles.settings}>Settings</Text>
+            <Text style={styles.settings}>Settings</Text>
+            <View style={styles.rowsView}> 
+              <Text style={styles.rows}>Name: </Text>
+              { this.fillText('name') }
+              <Button 
+                borderRadius={5}
+                buttonStyle={styles.button}
+                textStyle={styles.buttonText}
+                title={this.state.editingName ? 'Save' : ' Edit '}
+                onPress={this.editName}
+              />
+            </View>
+            <View style={styles.rowsView}> 
+              <Text style={styles.rows}>Email: </Text>
+              <Text style={styles.inputEmail}>{this.state.email}</Text>
+            </View>
+            <View style={styles.rowsView} >
+              <Text style={styles.rows}>Interests: </Text>
+            </View>
+            { this.interests() }
+            <View style={styles.passwordRowsView}> 
               <Button 
                   borderRadius={5}
                   buttonStyle={styles.button}
                   textStyle={styles.buttonText}
-                  title={this.state.editing ? 'Save' : 'Edit '}
-                  onPress={this.edit}
+                  title={this.state.changePass ? 'Save New Password' : ' Change Password '}
+                  onPress={this.openPasswordChange}
               />
-            </View>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Name: </Text>
-              { this.fillText('name') }
-            </View>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Email: </Text>
-              { this.fillText('email') }
-            </View>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Password: </Text>
-              { this.fillText('password') }
-            </View>
-            <View style={styles.rowsView}> 
-              <Text style={styles.rows}>Interests: </Text>
-              { this.fillText('interests') }
+              { this.changePassword() }
             </View>
           </View>
         </HeaderView>
