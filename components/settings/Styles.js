@@ -61,9 +61,7 @@ export default styles = StyleSheet.create({
     	paddingLeft: 5
   	},
   	passwordBox: {
-  		flexDirection: 'column',
   		padding: 10,
-  		paddingBottom: 20,
   	},
   	passwordInputBox: {
   		backgroundColor: '#FFFFFF',
@@ -74,14 +72,11 @@ export default styles = StyleSheet.create({
     	borderColor: '#d6d7da',
     	flex: 1,
     	padding: 15,
-    	color: '#000000'
   	},
   	passwordRowsView: {
   		paddingTop: 10,
   		paddingLeft: 15,
     	paddingRight: 15,
-    	height: 40,
-    	flexDirection: 'column',
   	},
   	passwordsSpacing: {
   		padding: 5,

@@ -57,37 +57,6 @@ class Settings extends React.Component {
       }
     }
 
-    this.changePassword = () => {
-      if(this.state.changePass)
-      {
-        return (
-          <View style={styles.passwordBox}>
-            <View style={styles.passwordsSpacing}>
-              <TextInput 
-              style={styles.passwordInputBox}
-              textAlign='left'
-              autoCapitalize='none'
-              autoCorrect={false}
-              placeholder='Enter new password'
-              value={this.state.newPassword1}
-              onChangeText={(input) => this.setState({newPassword1: input})}
-              />
-            </View>
-            <View style={styles.passwordsSpacing}>
-              <TextInput 
-              style={styles.passwordInputBox}
-              textAlign='left'
-              autoCapitalize='none'
-              autoCorrect={false}
-              placeholder='Re-enter new password'
-              value={this.state.newPassword2}
-              onChangeText={(input) => this.setState({newPassword2: input})}
-              />
-            </View>
-          </View>);
-      }
-    }
-
     this.interests = () => {
       return (
         <View>
@@ -122,9 +91,40 @@ class Settings extends React.Component {
         </View>
       );
     }
+
+    this.changePassword = () => {
+      if(this.state.changePass)
+      {
+        return (
+          <View style={styles.passwordBox}>
+            <View style={styles.passwordsSpacing}>
+              <TextInput 
+              style={styles.passwordInputBox}
+              textAlign='left'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='Enter new password'
+              value={this.state.newPassword1}
+              onChangeText={(input) => this.setState({ newPassword1: input})}
+              />
+            </View>
+            <View style={styles.passwordsSpacing}>
+              <TextInput 
+              style={styles.passwordInputBox}
+              textAlign='left'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='Re-enter new password'
+              value={this.state.newPassword2}
+              onChangeText={(input) => this.setState({ newPassword2: input})}
+              />
+            </View>
+          </View>
+        );
+      }
+    }
 }
   render() {
-    console.warn(this.state.newPassword1)
     return (
         <HeaderView style={styles.container} history={this.props.history}>
           <View style={styles.screen}>
