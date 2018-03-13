@@ -1,12 +1,17 @@
 const base_url = 'http://localhost:3000/api';
 
-function GET(path) {
+function GET(path, token) {
   let url = base_url + path;
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token !== undefined) {
+    headers.Authorization = 'Bearer ' + token;
+  }
+  
   return fetch(url, { 
     method: 'GET', 
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: headers
   })
   .then((res) => {
     if (!res.ok) {
@@ -16,13 +21,18 @@ function GET(path) {
   });
 }
 
-function POST(path, data) {
+function POST(path, data, token) {
   let url = base_url + path;
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token !== undefined) {
+    headers.Authorization = 'Bearer ' + token;
+  }
+  
   return fetch(url, { 
     method: 'POST', 
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers,
     body: JSON.stringify(data)
   })
   .then((res) => {
@@ -33,13 +43,18 @@ function POST(path, data) {
   });
 }
 
-function PATCH(path, data) {
+function PATCH(path, data, token) {
   let url = base_url + path;
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token !== undefined) {
+    headers.Authorization = 'Bearer ' + token;
+  }
+  
   return fetch(url, { 
     method: 'PATCH', 
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers,
     body: JSON.stringify(data)
   })
   .then((res) => {
@@ -50,13 +65,18 @@ function PATCH(path, data) {
   });
 }
 
-function DELETE(path) {
+function DELETE(path, token) {
   let url = base_url + path;
+  let headers = {
+    'Content-Type': 'application/json',
+  };
+  if (token !== undefined) {
+    headers.Authorization = 'Bearer ' + token;
+  }
+
   return fetch(url, { 
     method: 'DELETE', 
-    headers: {
-      'Content-Type': 'application/json'
-    }
+    headers: headers
   })
   .then((res) => {
     if (!res.ok) {

@@ -8,19 +8,29 @@ import Feed from './components/feed/Feed.js';
 import Settings from './components/settings/Settings.js';
 import Businesses from './components/businesses/Businesses.js';
 
+import { connect, Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducer from './reducers/reducers';
+
+let store = createStore(
+  reducer
+);
+
 export default class App extends React.Component {
   render() {
     return (
-      <Router>
-        <View style={styles.container}>
-        <Switch>
-          <Route exact path="/" component={(props) => <Login {...props}/>}/>
-          <Route exact path="/offers" component={(props) => <Feed {...props}/>}/>
-          <Route exact path="/settings" component={(props) => <Settings {...props}/>}/>
-          <Route exact path="/businesses" component={(props) => <Businesses {...props}/>}/>
-        </Switch>
-        </View>
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <View style={styles.container}>
+          <Switch>
+            <Route exact path="/" component={(props) => <Login {...props}/>}/>
+            <Route exact path="/offers" component={(props) => <Feed {...props}/>}/>
+            <Route exact path="/settings" component={(props) => <Settings {...props}/>}/>
+            <Route exact path="/businesses" component={(props) => <Businesses {...props}/>}/>
+          </Switch>
+          </View>
+        </Router>
+      </Provider>
     );
   }
 }

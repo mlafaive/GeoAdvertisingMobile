@@ -21,7 +21,7 @@ class HeaderView extends React.Component {
     }
 
     this.open_menu = () => {
-      this.menu.open();
+      this.menu.getWrappedInstance().open();
     }
   }
   render() {

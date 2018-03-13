@@ -7,6 +7,11 @@ import { Button } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import ReactRouterPropTypes from 'react-router-prop-types';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setAccessToken, setRefreshToken } from '../../actions/token.js';
+import { setEmail } from '../../actions/email.js';
+
 import styles from './Styles.js';
 
 var screenSize = Dimensions.get('window').width
@@ -28,6 +33,13 @@ class Menu extends React.Component {
 
     this.home = () => {
       this.props.history.push('/offers');
+    }
+
+    this.logout = () => {
+      this.props.setAccessToken();
+      this.props.setRefreshToken();
+      this.props.setEmail('');
+      this.props.history.push('/');
     }
 
     this.left = -1*menuWidth;
@@ -119,15 +131,22 @@ class Menu extends React.Component {
               containerViewStyle={styles.buttonView}
               buttonStyle={styles.button}
               textStyle={styles.menuText}
-              title='Businesses'
+              title='My Businesses'
               onPress={this.businesses}
             />
             <Button
               containerViewStyle={styles.buttonView}
               buttonStyle={styles.button}
               textStyle={styles.menuText}
-              title='Settings'
+              title='Account Settings'
               onPress={this.settings}
+            />
+            <Button
+              containerViewStyle={styles.buttonView}
+              buttonStyle={styles.button}
+              textStyle={styles.menuText}
+              title='Sign Out'
+              onPress={this.logout}
             />
           </View>
         </View>
@@ -139,4 +158,18 @@ Menu.propTypes = {
   history: ReactRouterPropTypes.history.isRequired
 };
 
-export default Menu;
+function mapStateToProps(state) {
+  return {
+    token: state.token
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setAccessToken,
+    setRefreshToken,
+    setEmail
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Menu);

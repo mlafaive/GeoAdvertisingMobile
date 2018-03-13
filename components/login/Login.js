@@ -1,14 +1,14 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableHighlight } from 'react-native';
 import { Button, ButtonGroup, Icon } from 'react-native-elements';
-import { POST } from '../../fetch_wrapper/FetchWrapper.js';
+import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setAccessToken, setRefreshToken } from '../../actions/token.js';
+import { setEmail } from '../../actions/email.js';
 
 import styles from './Styles.js';
-
-const type = {
-  USER: 0,
-  BUSINESS: 1
-};
 
 const state = {
   LOGIN: 0,
@@ -20,7 +20,7 @@ function valid_email(email) {
     return re.test(String(email).toLowerCase());
 }
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,26 +32,40 @@ export default class Login extends React.Component {
       type: 'user',
       loading: false,
       login_text: 'Login',
-      type: type.USER,
-      iconViewHeight: 150,
       error: ''
     };
 
 
 
     this.login = () => {
-      // if (!valid_email(this.state.email)) {
-      //   this.setState({error: 'please enter a valid email'})
-      //   return;
-      // }
+      if (!valid_email(this.state.email)) {
+        this.setState({error: 'please enter a valid email'})
+        return;
+      }
 
-      // var password_regex = /^([a-zA-Z0-9!@$&?]+)$/;
-      // if(!password_regex.test(this.state.password)) {
-      //   this.setState({error: 'please enter a valid password'})
-      //   return;
-      // }
-      // console.warn('valid request');
-      this.props.history.push('/offers');
+      var password_regex = /^([a-zA-Z0-9!@$&?]+)$/;
+      if(!password_regex.test(this.state.password)) {
+        this.setState({error: 'please enter a valid password'})
+        return;
+      }
+      POST('/login', {
+        email: this.state.email,
+        password: this.state.password
+      })
+      .then((data) => {
+        this.props.setAccessToken(data.access_token);
+        this.props.setRefreshToken(data.refresh_token);
+        this.props.setEmail(this.state.email);
+        this.props.history.push('/offers');
+      })
+      .catch((err) => {
+        err.json().then((data) => {
+          this.setState({error: data.error, loading: false, login_text: 'Login'})
+        });
+      });
+      this.setState({loading: true, login_text: ''});
+      
+      //this.props.history.push('/offers');
 
     }
 
@@ -78,6 +92,26 @@ export default class Login extends React.Component {
         this.setState({error: 'passwords do not match'})
         return;
       }
+
+      POST('/users', {
+        email: this.state.email,
+        password: this.state.password,
+        name: this.state.name
+      })
+      .then((data) => {
+        this.props.setAccessToken(data.access_token);
+        this.props.setRefreshToken(data.refresh_token);
+        this.props.setEmail(this.state.email);
+        this.props.history.push('/offers');
+      })
+      .catch((err) => {
+        err.json().then((data) => {
+          this.setState({error: data.error, loading: false, login_text: 'Sign Up'})
+        });
+      });
+      this.setState({loading: true, login_text: ''});
+
+      //this.props.history.push('/offers');
     }
 
     this.submit = () => {
@@ -89,12 +123,6 @@ export default class Login extends React.Component {
         this.create();
       }
       
-    }
-
-    this.switch_type = (type) => {
-      this.setState({
-        type: type
-      });
     }
 
     this.change_state = () => {
@@ -202,3 +230,13 @@ export default class Login extends React.Component {
     );
   }
 }
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setAccessToken,
+    setRefreshToken,
+    setEmail
+  }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(Login);
