@@ -83,30 +83,35 @@ class Settings extends React.Component {
     }
 
     this.openPasswordChange = () => {
-      if (this.state.newPassword1 != this.state.newPassword2) {
-        this.setState({error: 'passwords do not match!'});
-        return;
-      }
-      if (this.state.newPassword1 == '') {
-        this.setState({error: 'password fields are empty!'});
-        return;
-      }
 
-      this.setState({
-        changePass: !this.state.changePass,
-        newPassword: this.state.newPassword1
-      });
       if (!this.state.changePass) {
+        this.setState({
+          changePass: !this.state.changePass,
+        });
         this.state.passButtonText = 'Save New Password';
       }
       if (this.state.changePass) {
+        if (this.state.newPassword1 != this.state.newPassword2) {
+          this.setState({error: 'passwords do not match!'});
+          return;
+        }
+        if (this.state.newPassword1 == '') {
+          this.setState({error: 'password fields are empty!'});
+          return;
+        }
+        this.setState({
+          changePass: !this.state.changePass,
+          error: ''
+        });
         this.state.passButtonText = '';
         this.state.loadingPass = true;
-        PATCH('/users/'+this.props.email, {password: this.state.newPassword})
+        PATCH('/users/'+this.props.email, {password: this.state.newPassword1})
         .then((data) => {
           this.setState({
             passButtonText: ' Change Password ',
-            loadingPass: false
+            loadingPass: false,
+            newPassword1: '',
+            newPassword2: ''
           });
         })
         .catch((err) => {
@@ -242,6 +247,9 @@ class Settings extends React.Component {
                     onPress={this.openPasswordChange}
                 />
                 { this.changePassword() }
+                <Text style={styles.error} >
+                  {this.state.error}
+                </Text>
               </View>
             </View>
           }

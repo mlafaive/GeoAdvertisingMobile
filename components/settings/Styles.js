@@ -91,4 +91,7 @@ export default styles = StyleSheet.create({
 	individualInterests: {
 		flex: 1,
 	},
+	error: {
+		color: 'red',
+	}
 });
