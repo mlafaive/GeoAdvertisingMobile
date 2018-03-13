@@ -13,7 +13,6 @@ class Settings extends React.Component {
       changePass: false,
       name: 'John',
       email: 'john@gmail.com',
-      password: '123hackme',
       newPassword1: '',
       newPassword2: '',
       interest1: true,

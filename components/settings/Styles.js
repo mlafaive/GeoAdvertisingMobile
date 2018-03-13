@@ -51,41 +51,40 @@ export default styles = StyleSheet.create({
 		flex:3,
 	},
 	inputBox: {
-    	backgroundColor: '#FFFFFF',
-    	height: 24,
-    	fontSize: 17,
-    	borderRadius: 10,
-    	borderWidth: 0.5,
-    	borderColor: '#d6d7da',
-    	flex: 2,
-    	paddingLeft: 5
-  	},
-  	passwordBox: {
-  		padding: 10,
-  	},
-  	passwordInputBox: {
-  		backgroundColor: '#FFFFFF',
-    	height: 25,
-    	fontSize: 17,
-    	borderRadius: 10,
-    	borderWidth: 0.5,
-    	borderColor: '#d6d7da',
-    	flex: 1,
-    	padding: 15,
-  	},
-  	passwordRowsView: {
-  		paddingTop: 10,
-  		paddingLeft: 15,
-    	paddingRight: 15,
-  	},
-  	passwordsSpacing: {
-  		padding: 5,
-  	},
-  	individualInterestsRow: {
-  		flexDirection: 'row',
-  		justifyContent: 'center'
-  	},
-  	individualInterests: {
-  		flex: 1,
-  	},
+  	backgroundColor: '#FFFFFF',
+  	height: 24,
+  	fontSize: 17,
+  	borderRadius: 10,
+  	borderWidth: 0.5,
+  	borderColor: '#d6d7da',
+  	flex: 2,
+  	paddingLeft: 5
+	},
+	passwordBox: {
+		padding: 10,
+	},
+	passwordInputBox: {
+		backgroundColor: '#FFFFFF',
+  	height: 25,
+    color: '#111111',
+  	borderRadius: 10,
+  	borderWidth: 0.5,
+  	borderColor: '#d6d7da',
+  	paddingLeft: 5,
+	},
+	passwordRowsView: {
+		paddingTop: 10,
+		paddingLeft: 15,
+  	paddingRight: 15,
+	},
+	passwordsSpacing: {
+		padding: 5,
+	},
+	individualInterestsRow: {
+		flexDirection: 'row',
+		justifyContent: 'center'
+	},
+	individualInterests: {
+		flex: 1,
+	},
 });
