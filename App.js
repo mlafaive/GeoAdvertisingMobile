@@ -8,13 +8,8 @@ import Feed from './components/feed/Feed.js';
 import Settings from './components/settings/Settings.js';
 import Businesses from './components/businesses/Businesses.js';
 
-import { connect, Provider } from 'react-redux';
-import { createStore } from 'redux';
-import reducer from './reducers/reducers';
-
-let store = createStore(
-  reducer
-);
+import { Provider } from 'react-redux';
+import store from './store/Store.js';
 
 export default class App extends React.Component {
   render() {

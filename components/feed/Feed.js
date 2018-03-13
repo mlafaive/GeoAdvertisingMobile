@@ -30,35 +30,16 @@ class Feed extends React.Component {
       return items;
     }
 
-    this.refresh_token = () => {
-      POST('/refresh', this.props.token.refresh_token)
-      .then((data) => {
-        this.props.setAccessToken(data.access_token);
-        this.get_offers(data.access_token);
-      })
-      .catch((err) => {
-        console.warn(err);
+    GET('/offers')
+    .then((data) => {
+      this.setState({
+        offers: data.offers,
+        loading: false
       });
-    }
-
-    this.get_offers = (token) => {
-      GET('/offers', token)
-      .then((data) => {
-        this.setState({
-          offers: data.offers,
-          loading: false
-        });
-      })
-      .catch((err) => {
-        if (err.status === 403) {
-          this.refresh_token();
-          return;
-        }
-        console.warn(err);
-      });
-    }
-
-    this.get_offers(this.props.token.access_token);
+    })
+    .catch((err) => {
+      console.warn(err);
+    });
   }
   render() {
     return (

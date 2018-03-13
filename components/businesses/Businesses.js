@@ -30,36 +30,17 @@ class Businesses extends React.Component {
       return items;
     }
 
-    this.refresh_token = () => {
-      GET('/refresh', this.props.token.refresh_token)
-      .then((data) => {
-        this.props.setAccessToken(data.access_token);
-        this.get_businesses(data.access_token);
-      })
-      .catch((err) => {
-        console.warn(err);
+    let url = '/users/' + this.props.email + '/businesses';
+    GET(url)
+    .then((data) => {
+      this.setState({
+        businesses: data.businesses,
+        loading: false
       });
-    }
-
-    this.get_businesses = (token) => {
-      let url = '/users/' + this.props.email + '/businesses';
-      GET(url, token)
-      .then((data) => {
-        this.setState({
-          businesses: data.businesses,
-          loading: false
-        });
-      })
-      .catch((err) => {
-        if (err.status === 403) {
-          this.refresh_token();
-          return;
-        }
-        console.warn(err);
-      });
-    }
-
-    this.get_businesses(this.props.token.access_token);
+    })
+    .catch((err) => {
+      console.warn(err);
+    });
   }
   render() {
     return (
