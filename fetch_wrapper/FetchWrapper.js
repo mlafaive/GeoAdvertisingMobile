@@ -9,7 +9,7 @@ function refresh_token(method, path, body) {
   let url = base_url + '/refresh';
   let headers = {
     'Content-Type': 'application/json',
-    'Authorization': token
+    'Authorization': 'Bearer ' + token
   };
   return fetch(url, { 
     method: 'POST', 
@@ -24,7 +24,8 @@ function refresh_token(method, path, body) {
   })
   .then((data) => {
     store.dispatch(setAccessToken(data.access_token));
-    headers.Authorization = data.access_token;
+    headers.Authorization = 'Bearer ' + data.access_token;
+    url = base_url + path;
     let config = {
       method: method,
       headers: headers,

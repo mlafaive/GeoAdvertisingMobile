@@ -36,7 +36,7 @@ export default styles = StyleSheet.create({
 	},
 	rows: {
     	fontSize: 18,
-    	flex:1,
+    	flex:1.2,
 	},
 	button: {
 		backgroundColor: '#faebd7', 
