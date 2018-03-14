@@ -33,7 +33,7 @@ function refresh_token(method, path, body) {
     if (body !== undefined) {
       config.body = body;
     }
-    return fetch(url, config)
+    return fetch(url, config);
   })
   .then((res) => {
     if (!res.ok) {
@@ -49,7 +49,7 @@ function GET(path) {
   let headers = {
     'Content-Type': 'application/json',
   };
-  if (token !== undefined && token !== '') {
+  if (token !== undefined) {
     headers.Authorization = 'Bearer ' + token;
   }
   
