@@ -1,14 +1,14 @@
 import store from '../store/Store.js';
 import { setAccessToken } from '../actions/token.js';
 
-const base_url = 'http://localhost:3000/api';
+const base_url = 'https://geo-advertising.herokuapp.com/api';
 
 function refresh_token(method, path, body) {
   let token = store.getState().token.refresh_token;
   let url = base_url + '/refresh';
   let headers = {
     'Content-Type': 'application/json',
-    'Authorization': token
+    'Authorization': 'Bearer ' + token
   };
   return fetch(url, { 
     method: 'POST', 
@@ -23,7 +23,8 @@ function refresh_token(method, path, body) {
   })
   .then((data) => {
     store.dispatch(setAccessToken(data.access_token));
-    headers.Authorization = data.access_token;
+    headers.Authorization = 'Bearer ' + data.access_token;
+    url = base_url + path;
     let config = {
       method: method,
       headers: headers,
@@ -31,7 +32,7 @@ function refresh_token(method, path, body) {
     if (body !== undefined) {
       config.body = body;
     }
-    return fetch(url, config)
+    return fetch(url, config);
   })
   .then((res) => {
     if (!res.ok) {
