@@ -1,7 +1,7 @@
 import store from '../store/Store.js';
 import { setAccessToken } from '../actions/token.js';
 
-const base_url = 'http://localhost:3000/api';
+const base_url = 'https://geo-advertising.herokuapp.com/api';
 
 // tooling modules
 function refresh_token(method, path, body) {
