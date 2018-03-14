@@ -3,7 +3,6 @@ import { setAccessToken } from '../actions/token.js';
 
 const base_url = 'http://localhost:3000/api';
 
-// tooling modules
 function refresh_token(method, path, body) {
   let token = store.getState().token.refresh_token;
   let url = base_url + '/refresh';
@@ -48,7 +47,7 @@ function GET(path) {
   let headers = {
     'Content-Type': 'application/json',
   };
-  if (token !== undefined && token !== '') {
+  if (token !== undefined) {
     headers.Authorization = 'Bearer ' + token;
   }
   

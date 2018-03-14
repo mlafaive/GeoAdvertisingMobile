@@ -1,8 +1,10 @@
 import React from 'react';
 import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Button } from 'react-native-elements';
 
 import HeaderView from '../header_view/HeaderView.js';
 import Business from '../business/Business.js';
+import BusinessForm from '../business_form/BusinessForm.js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -19,6 +21,7 @@ class Businesses extends React.Component {
 
     this.state = {
       loading: true,
+      creating: false,
       businesses: []
     };
 
@@ -41,6 +44,67 @@ class Businesses extends React.Component {
     .catch((err) => {
       console.warn(err);
     });
+
+    this.create = () => {
+      this.setState({
+        create: true
+      });
+    }
+
+    this.cancel = () => {
+      this.setState({
+        create: false
+      });
+    }
+
+    this.render_create = () => {
+      let items = [];
+
+      if (!this.state.create) {
+        items.push(
+          <View key={0} style={styles.headerView}>
+            <Button
+                raised
+                borderRadius={5}
+                containerViewStyle={styles.buttonCont}
+                buttonStyle={styles.submit}
+                textStyle={styles.submitText}
+                title="Create New"
+                onPress={this.create}
+                iconRight={{
+                  containerStyle: styles.icon, 
+                  name: 'md-add-circle', 
+                  type: 'ionicon', 
+                  size: 20
+                }}
+            />
+          </View>
+        );
+      }
+      else {
+        items.push(
+          <View key={0} style={styles.headerView}>
+            <Button
+              raised
+              borderRadius={5}
+              containerViewStyle={styles.buttonCont}
+              buttonStyle={styles.cancel}
+              textStyle={styles.cancelText}
+              title="Cancel"
+              onPress={this.cancel}
+            />
+          </View>
+        );
+
+        items.push(
+          <View key={1}>
+            <BusinessForm create/>
+          </View>
+        );
+      }
+
+      return items;
+    }
   }
   render() {
     return (
@@ -50,9 +114,12 @@ class Businesses extends React.Component {
             <ActivityIndicator size='large' color="#001f3f" />
           </View>
           :
-          <ScrollView>
-            { this.render_businesses() }
-          </ScrollView>
+          <View style={styles.content}>
+            { this.render_create() }
+            <ScrollView>
+              { this.render_businesses() }
+            </ScrollView>
+          </View>
         }
         </HeaderView>
     );
@@ -61,16 +128,8 @@ class Businesses extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    token: state.token,
     email: state.email
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    setAccessToken,
-    setEmail
-  }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Businesses);
+export default connect(mapStateToProps)(Businesses);
