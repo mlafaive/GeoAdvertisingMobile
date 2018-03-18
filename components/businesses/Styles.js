@@ -37,6 +37,12 @@ export default styles = StyleSheet.create({
 		paddingTop: 15,
 		paddingBottom: 25
 	},
+	cancelView: {
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		paddingTop: 15,
+		paddingBottom: 5
+	},
 	headerViewCreate: {
 		flexDirection: 'row',
 		justifyContent: 'space-between',

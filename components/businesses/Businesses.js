@@ -21,14 +21,16 @@ class Businesses extends React.Component {
 
     this.state = {
       loading: true,
-      creating: false,
-      businesses: []
+      create: false,
+      businesses: [],
+      form_loading: false,
+      form_error: ''
     };
 
     this.render_businesses = () => {
       var items = [];
-      for (var i = 0; i < this.state.businesses.length; i++) {
-        items.push(<Business key={0} {...this.state.businesses[i]}/>);
+      for (var i = this.state.businesses.length - 1; i >= 0; i--) {
+        items.push(<Business key={i} {...this.state.businesses[i]}/>);
       }
       return items;
     }
@@ -49,13 +51,40 @@ class Businesses extends React.Component {
       this.setState({
         create: true
       });
-    }
+    };
 
     this.cancel = () => {
+      if (this.state.form_loading) {
+        return;
+      }
       this.setState({
-        create: false
+        create: false,
+        form_error: ''
       });
-    }
+    };
+
+    this.create_business = (state) => {
+      // TODO: validate state
+      this.setState({
+        form_loading: true,
+      });
+      POST('/businesses', state)
+      .then((data) => {
+        let new_businesses = this.state.businesses;
+        new_businesses.push(data);
+        this.setState({
+          form_loading: false,
+          businesses: new_businesses,
+          form_error: '',
+          create: false,
+        });
+      })
+      .catch((err) => {
+        err.json().then((data) => {
+          this.setState({form_error: data.error, form_loading: false})
+        });
+      });
+    };
 
     this.render_create = () => {
       let items = [];
@@ -83,7 +112,7 @@ class Businesses extends React.Component {
       }
       else {
         items.push(
-          <View key={0} style={styles.headerView}>
+          <View key={0} style={styles.cancelView}>
             <Button
               raised
               borderRadius={5}
@@ -98,10 +127,14 @@ class Businesses extends React.Component {
 
         items.push(
           <View key={1}>
-            <BusinessForm create/>
+            <BusinessForm 
+              onSave={this.create_business} 
+              loading={this.state.form_loading}
+              error={this.state.form_error}
+            />
           </View>
         );
-      }
+      };
 
       return items;
     }

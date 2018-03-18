@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, View, ScrollView, TextInput } from 'react-native';
+import { Button } from 'react-native-elements';
 
 import PropTypes from 'prop-types';
 
@@ -8,15 +9,11 @@ import styles from './Styles.js';
 class BusinessForm extends React.Component {
   constructor(props) {
     super(props);
-    if (!props.create && !props.hasOwnProperty('id')) {
-      console.warn('Must pass prop \'id\' when editing existing business');
-    }
     this.state = {
       name: props.name,
       store_address: props.store_address,
       city: props.city.city_name,
-      state: props.city.state_name,
-      error: ''
+      state: props.city.state_name
     };
 
     this.create_input = (i, label, field) => {
@@ -46,6 +43,15 @@ class BusinessForm extends React.Component {
       return items;
     }
 
+    this.submit = () => {
+      this.props.onSave({
+        name: this.state.name,
+        store_address: this.state.store_address,
+        city_name: this.state.city,
+        state_name: this.state.state
+      });
+    }
+
 
   }
   render() {
@@ -53,6 +59,21 @@ class BusinessForm extends React.Component {
         <View style={styles.container}>
           <View style={styles.form}>
             { this.render_inputs() }
+            <View style={styles.errorView}>
+              <Text style={styles.errorText}>{this.props.error}</Text>
+            </View>
+            <View style={styles.submitView}>
+              <Button
+                raised
+                borderRadius={5}
+                containerViewStyle={styles.submitCont}
+                loading={this.props.loading}
+                buttonStyle={styles.submit}
+                textStyle={styles.submitText}
+                title={this.props.loading ? "" : "Save"}
+                onPress={this.submit}
+              />
+            </View>
           </View>
         </View>
     );
@@ -60,7 +81,9 @@ class BusinessForm extends React.Component {
 }
 
 BusinessForm.propTypes = {
-  create: PropTypes.bool,
+  onSave: PropTypes.func.isRequired,
+  error: PropTypes.string,
+  loading: PropTypes.bool,
   id: PropTypes.number,
   name: PropTypes.string,
   store_address: PropTypes.string,
@@ -71,7 +94,8 @@ BusinessForm.propTypes = {
 }
 
 BusinessForm.defaultProps = {
-  create: false,
+  loading: false,
+  error: '',
   name: '',
   store_address: '',
   city: {
