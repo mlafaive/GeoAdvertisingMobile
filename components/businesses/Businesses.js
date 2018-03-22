@@ -64,6 +64,20 @@ class Businesses extends React.Component {
     };
 
     this.create_business = (state) => {
+      var alpha_numeric = /^([a-zA-Z0-9.\- ]+)$/;
+      if(!alpha_numeric.test(state.store_address)) {
+        this.setState({form_error: 'please enter a valid address'})
+        return;
+      }
+      var alpha = /^([a-zA-Z ]+)$/;
+      if(!alpha.test(state.city_name)) {
+        this.setState({form_error: 'please enter a valid city'})
+        return;
+      }
+      if(!alpha.test(state.state_name)) {
+        this.setState({form_error: 'please enter a valid state'})
+        return;
+      }
       // TODO: validate state
       this.setState({
         form_loading: true,
