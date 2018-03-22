@@ -60,7 +60,6 @@ class HeaderView extends React.Component {
 }
 
 HeaderView.propTypes = {
-  children: PropTypes.element.isRequired,
   style: View.propTypes.style,
   history: ReactRouterPropTypes.history.isRequired
 };

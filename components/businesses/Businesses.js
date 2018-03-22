@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, ActivityIndicator, TouchableHighlight } from 'react-native';
 import { Button } from 'react-native-elements';
 
 import HeaderView from '../header_view/HeaderView.js';
@@ -24,13 +24,30 @@ class Businesses extends React.Component {
       create: false,
       businesses: [],
       form_loading: false,
-      form_error: ''
+      form_error: '',
+      open: null
     };
+
+    this.open = (index) => {
+      return () => this.setState({
+        open: index
+      });
+    }
 
     this.render_businesses = () => {
       var items = [];
       for (var i = this.state.businesses.length - 1; i >= 0; i--) {
-        items.push(<Business key={i} {...this.state.businesses[i]}/>);
+        items.push(
+          <View key={i} style={styles.business}>
+            <TouchableHighlight
+              style={styles.businessOpen}
+              underlayColor='#AAAAAA'
+              onPress={this.open(i)}
+            >
+              <Text style={styles.businessText}>{this.state.businesses[i].name}</Text>
+            </TouchableHighlight>
+          </View>
+        );
       }
       return items;
     }
@@ -78,7 +95,7 @@ class Businesses extends React.Component {
         this.setState({form_error: 'please enter a valid state'})
         return;
       }
-      // TODO: validate state
+
       this.setState({
         form_loading: true,
       });
@@ -156,18 +173,26 @@ class Businesses extends React.Component {
   render() {
     return (
         <HeaderView style={styles.container} history={this.props.history}>
-        { this.state.loading ?
-          <View style={styles.loader}>
-            <ActivityIndicator size='large' color="#001f3f" />
-          </View>
-          :
-          <View style={styles.content}>
-            { this.render_create() }
-            <ScrollView>
-              { this.render_businesses() }
-            </ScrollView>
-          </View>
-        }
+          { this.state.loading ?
+            <View style={styles.loader}>
+              <ActivityIndicator size='large' color="#001f3f" />
+            </View>
+            :
+            <View style={styles.content}>
+              { this.render_create() }
+              <ScrollView>
+                { this.render_businesses() }
+              </ScrollView>
+            </View>
+          }
+          { this.state.open !== null &&
+            <View style={styles.fullBusiness}>
+              <Business 
+                {...this.state.businesses[this.state.open]} 
+                close={() => this.setState({ open: null })}
+              />
+            </View>
+          }
         </HeaderView>
     );
   }

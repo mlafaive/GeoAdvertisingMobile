@@ -21,7 +21,7 @@ class Feed extends React.Component {
     this.render_offers = () => {
       var items = [];
       for (var i = 0; i < this.state.offers.length; i++) {
-        items.push(<Offer key={0} {...this.state.offers[i]}/>);
+        items.push(<Offer key={i} {...this.state.offers[i]}/>);
       }
       return items;
     }
