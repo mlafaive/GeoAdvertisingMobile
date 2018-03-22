@@ -3,10 +3,6 @@ import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
 
 import ReactRouterPropTypes from 'react-router-prop-types';
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { setAccessToken } from '../../actions/token.js';
-
 import HeaderView from '../header_view/HeaderView.js';
 import Offer from '../offer/Offer.js';
 
@@ -62,16 +58,4 @@ Feed.propTypes = {
   history: ReactRouterPropTypes.history.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    token: state.token,
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({
-    setAccessToken
-  }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Feed);
+export default Feed;
