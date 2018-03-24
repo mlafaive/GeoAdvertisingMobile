@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, TouchableHighlight, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
+import openMap from 'react-native-open-maps';
 
 import Offer from '../offer/Offer.js';
 
@@ -13,8 +14,23 @@ class Business extends React.Component {
     super(props);
     this.state = {
     };
+    this.maps = () => {
+      openMap({ latitude: this.props.latitude, longitude: this.props.longitude });
+    }
+
     this.render_info = () => {
-      return <Text></Text>;
+      return (
+        <TouchableHighlight onPress={this.maps} underlayColor='#AAAAAA'>
+          <View style={styles.info}>
+            <Text style={styles.address}>
+              {this.props.store_address}
+            </Text>
+            <Text style={styles.address}>
+              {this.props.city.city_name + ", " + this.props.city.state_name}
+            </Text>
+          </View>
+        </TouchableHighlight>
+      );
     }
 
     this.render_offers = () => {
@@ -42,9 +58,7 @@ class Business extends React.Component {
             }
           </View>
           <View style={styles.body}>
-            <View style={styles.info}>
-              { this.render_info() }
-            </View>
+            { this.render_info() }
             <View style={styles.offers}>
               <View style={styles.offerHeader}>
                 <Text style={styles.offerHeaderText}>Offers</Text>
