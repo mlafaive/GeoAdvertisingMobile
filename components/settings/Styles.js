@@ -21,6 +21,7 @@ export default styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 25,
 		paddingBottom: 10,
+		flex: 3
 	},
 	settingsRow: {
 		height: 35
@@ -32,14 +33,14 @@ export default styles = StyleSheet.create({
     	paddingLeft: 15,
     	height: 35,
     	flexDirection: 'row',
-    	alignItems: 'baseline',
+    	alignItems: 'center',
 	},
 	rows: {
     	fontSize: 18,
     	flex:1.2,
 	},
 	button: {
-		backgroundColor: '#faebd7', 
+		backgroundColor: '#2ECC40',
     	borderRadius: 5,
     	height: 30,
     	flex: 1
@@ -58,26 +59,26 @@ export default styles = StyleSheet.create({
 		flex:3,
 	},
 	inputBox: {
-  	backgroundColor: '#FFFFFF',
-  	height: 24,
-  	fontSize: 17,
-  	borderRadius: 10,
-  	borderWidth: 0.5,
-  	borderColor: '#d6d7da',
-  	flex: 2,
-  	paddingLeft: 5
+  		backgroundColor: '#FFFFFF',
+	  	height: 24,
+	  	fontSize: 17,
+	  	borderRadius: 10,
+	  	borderWidth: 0.5,
+	  	borderColor: '#d6d7da',
+	  	flex: 3,
+	  	paddingLeft: 5
 	},
 	passwordBox: {
 		padding: 10,
 	},
 	passwordInputBox: {
 		backgroundColor: '#FFFFFF',
-  	height: 25,
-    color: '#111111',
-  	borderRadius: 10,
-  	borderWidth: 0.5,
-  	borderColor: '#d6d7da',
-  	paddingLeft: 5,
+	  	height: 25,
+	    color: '#111111',
+	  	borderRadius: 10,
+	  	borderWidth: 0.5,
+	  	borderColor: '#d6d7da',
+	  	paddingLeft: 5,
 	},
 	passwordRowsView: {
 		paddingTop: 10,
@@ -91,13 +92,19 @@ export default styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 	},
+	buttonPass: {
+		backgroundColor: '#faebd7',
+    	borderRadius: 5,
+    	height: 30,
+    	flex: 1
+	},
 	individualInterestsRow: {
+		flexDirection: 'row',
 		paddingLeft: 10,
-		justifyContent: 'flex-start',
-		flex: 3
+		justifyContent: 'center',
 	},
 	individualInterests: {
-		fontSize: 17,
+		width: 150
 	},
 	error: {
 		color: '#85144b',
@@ -107,5 +114,8 @@ export default styles = StyleSheet.create({
 	},
 	errorView: {
 		alignItems: 'center'
+	},
+	avoidKeyboard: {
+		backgroundColor: '#FFFFFF'
 	}
 });

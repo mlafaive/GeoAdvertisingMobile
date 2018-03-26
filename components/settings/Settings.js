@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text, View, TextInput, ActivityIndicator} from 'react-native';
+import { Text, View, TextInput, ActivityIndicator, KeyboardAvoidingView} from 'react-native';
 import { Button, ButtonGroup, CheckBox, Icon } from 'react-native-elements';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import HeaderView from '../header_view/HeaderView.js';
 
@@ -18,35 +19,50 @@ class Settings extends React.Component {
     super(props);
     this.state = {
       loadingPage: true,
-
       loadingName: false,
       editingName: false,
-      editNameText: ' Edit ',
+      editNameText: ' Save ',
+      editButtonDisabled: true,
       name: '',
       changePass: false,
       loadingPass: false,
       passButtonText: ' Change Password ',
       error: '',
-
       email: this.props.email,
       newPassword1: '',
       newPassword2: '',
+      enteredOldPassword: '',
       interests: [],
-      checked1: true,
-      checked2: false,
-      checked3: true,
-      checked4: true
     };
 
 
     this.get_info = () => {
+      GET('/interests')
+      .then((res) => {
+        let new_interests = res.interests;
+        
+        for (var i = 0; i < new_interests.length; i++) {
+          new_interests[i].checked = false;
+        }
 
-      GET('/users/'+this.props.email)
-      .then((data) => {
-        this.setState({
-          name: data.name,
-          interests: data.interests,
-          loadingPage: false
+        GET('/users/'+this.props.email)
+        .then((data) => {
+
+          for(var i = 0; i < new_interests.length; i++) {
+            for(var j = 0; j < data.interests.length; j++) {
+              if (new_interests[i].name == data.interests[j].name)
+                new_interests[i].checked = true;
+            }
+          }
+          this.setState({
+            name: data.name,
+            loadingPage: false,
+            interests: new_interests
+          });
+
+        })
+        .catch((err) => {
+         console.warn(err);
         });
       })
       .catch((err) => {
@@ -58,27 +74,63 @@ class Settings extends React.Component {
 
     this.editName = () => {
       this.setState({
-        editingName: !this.state.editingName
+        editNameText: '',
+        loadingName: true
       });
-
-      if (!this.state.editingName) {
-        this.state.editNameText = 'Save';
+      let new_interests = [];
+      for (var i = 0; i < this.state.interests.length; i++) {
+        if (this.state.interests[i].checked) {
+          new_interests.push(this.state.interests[i].id);
+        }
       }
-
-      if (this.state.editingName) {
-        this.state.editNameText = '';
-        this.state.loadingName = true;
-        PATCH('/users/'+this.props.email, {name: this.state.name})
-        .then((data) => {
-          this.setState({
-            editNameText: ' Edit ',
-            loadingName: false
-          });
-        })
-        .catch((err) => {
-          console.warn(err);
+      PATCH('/users/'+this.props.email, {
+        name: this.state.name,
+        interests: new_interests
+      })
+      .then((data) => {
+        this.setState({
+          editNameText: ' Save ',
+          loadingName: false,
+          editButtonDisabled: true
         });
-      } 
+
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+    } 
+
+    this.handle_check = (i) => {
+      return () => {
+        let current = this.state.interests;
+        current[i].checked = !current[i].checked;
+        this.setState({ interests: current, editButtonDisabled: false});
+      }
+    }
+
+    this.interests = () => {
+      let items = [];
+      for (var i = 0; i < this.state.interests.length; i += 2) {
+        items.push(
+          <View style={styles.individualInterestsRow} key={i}>
+            <CheckBox 
+              containerStyle={styles.individualInterests}
+              title={this.state.interests[i].name}
+              checked={this.state.interests[i].checked}
+              onPress={this.handle_check(i)}
+            />
+            { i + 1 < this.state.interests.length &&
+              <CheckBox 
+                containerStyle={styles.individualInterests}
+                title={this.state.interests[i + 1].name}
+                checked={this.state.interests[i + 1].checked}
+                onPress={this.handle_check(i + 1)}
+              />
+            }
+          </View>
+        );
+      }
+      return items;
     }
 
     this.openPasswordChange = () => {
@@ -90,11 +142,14 @@ class Settings extends React.Component {
         this.state.passButtonText = 'Save';
       }
       if (this.state.changePass) {
-        if (this.state.newPassword1 != this.state.newPassword2) {
+        if (this.state.enteredOldPassword === '') {
+          this.setState({error: 'please enter old password'});
+        }
+        if (this.state.newPassword1 !== this.state.newPassword2) {
           this.setState({error: 'passwords do not match!'});
           return;
         }
-        if (this.state.newPassword1 == '') {
+        if (this.state.newPassword1 === '') {
           this.setState({error: 'password fields are empty!'});
           return;
         }
@@ -104,55 +159,32 @@ class Settings extends React.Component {
         });
         this.state.passButtonText = '';
         this.state.loadingPass = true;
-        PATCH('/users/'+this.props.email, {password: this.state.newPassword1})
+        PATCH('/users/'+this.props.email, {
+          password: this.state.newPassword1,
+          old_password: this.state.enteredOldPassword,
+        })
         .then((data) => {
           this.setState({
             passButtonText: ' Change Password ',
             loadingPass: false,
             newPassword1: '',
-            newPassword2: ''
+            newPassword2: '',
+            enteredOldPassword: '',
+            changePass: false,
+            error: ''
           });
         })
         .catch((err) => {
-          console.warn(err);
+          err.json().then((data) => {
+            this.setState({
+              error: data.error, 
+              loadingPass: false,
+              passButtonText: 'Save',
+              changePass: true,
+            })
+          });
         });
       }
-    }
-
-    this.fillText = (type) => {
-      if(this.state.editingName)
-      {
-        return (
-        <TextInput 
-          style={styles.inputBox}
-          textAlign='left'
-          autoCapitalize='none'
-          autoCorrect={false}
-          value={this.state[type]}
-          onChangeText={(input) => this.setState({[type]: input})}
-          />);
-      }
-      else
-      {
-        return (<Text style={styles.inputText}>{this.state[type]}</Text>);
-      }
-    }
-
-    this.interests = () => {
-      var interests = '';
-      for (var i = 0; i < this.state.interests.length; i++) {
-        interests += this.state.interests[i].name;
-        if (i + 1 !== this.state.interests.length) {
-          interests += ', ';
-        }
-      }
-      return (
-        <View style={styles.individualInterestsRow}>
-          <Text style={styles.individualInterests}>
-          { interests }  
-          </Text>
-        </View>
-      );
     }
 
     this.changePassword = () => {
@@ -160,6 +192,18 @@ class Settings extends React.Component {
       {
         return (
           <View style={styles.passwordBox}>
+            <View style={styles.passwordsSpacing}>
+              <TextInput 
+              style={styles.passwordInputBox}
+              textAlign='left'
+              autoCapitalize='none'
+              autoCorrect={false}
+              placeholder='Enter old password'
+              value={this.state.enteredOldPassword}
+              onChangeText={(input) => this.setState({ enteredOldPassword: input, error: ''})}
+              secureTextEntry={true}
+              />
+            </View>
             <View style={styles.passwordsSpacing}>
               <TextInput 
               style={styles.passwordInputBox}
@@ -194,7 +238,7 @@ class Settings extends React.Component {
         return (
           <Button
             borderRadius={5}
-            buttonStyle={styles.button}
+            buttonStyle={styles.buttonPass}
             textStyle={styles.buttonText}
             title={"Cancel"}
             onPress={this.passwordCancel}
@@ -208,6 +252,7 @@ class Settings extends React.Component {
           changePass: !this.state.changePass,
           newPassword1: '',
           newPassword2: '',
+          enteredOldPassword: '',
           passButtonText: ' Change Password ',
           error: ''
         });
@@ -225,52 +270,72 @@ class Settings extends React.Component {
               <ActivityIndicator size='large' color="#001f3f" />
             </View>
             :
-            <View>
-              <Text style={styles.settings}>Settings</Text>
-              <View style={styles.rowsView}> 
-                <Text style={styles.rows}>Name: </Text>
-                { this.fillText('name') }
-                <Button 
-                  borderRadius={5}
-                  buttonStyle={styles.button}
-                  textStyle={styles.buttonText}
-                  title={this.state.editNameText}
-                  loading={this.state.loadingName}
-                  onPress={this.editName}
-                />
-              </View>
-              <View style={styles.rowsView}> 
-                <Text style={styles.rows}>Email: </Text>
-                <Text style={styles.inputEmail}>{this.state.email}</Text>
-              </View>
-              <View style={styles.rowsView} >
-                <Text style={styles.rows}>Interests: </Text>
-                { this.interests() }
-              </View>
-              <View style={styles.passwordRowsView}> 
-                <View style={styles.passwordButtonStyle}>
+
+            <KeyboardAwareScrollView 
+                  style={styles.avoidKeyboard} 
+                  resetScrollToCoords={{ x: 0, y: 0 }}
+                  scrollEnabled={true}
+                  extraScrollHeight={60}
+                  >
+              <View>
+                <View style={styles.rowsView}>
+                  <Text style={styles.blank}> </Text>
+                  <Text style={styles.settings}>Settings</Text>
                   <Button 
                     borderRadius={5}
+                    disabled={this.state.editButtonDisabled}
                     buttonStyle={styles.button}
                     textStyle={styles.buttonText}
-                    title={this.state.passButtonText}
-                    loading={this.state.loadingPass}
-                    loadingProps={{ color: "#111111" }}
-                    onPress={this.openPasswordChange}
+                    title={this.state.editNameText}
+                    loading={this.state.loadingName}
+                    onPress={this.editName}
                   />
-                  { this.passwordButton() }
                 </View>
-                { this.changePassword() }
-                <View style={styles.errorView} >
-                  <Text style={styles.error} >
-                    {this.state.error}
-                  </Text>
+                <View style={styles.rowsView}> 
+                  <Text style={styles.rows}>Email: </Text>
+                  <Text style={styles.inputEmail}>{this.state.email}</Text>
+                </View>
+                <View style={styles.rowsView}> 
+                  <Text style={styles.rows}>Name: </Text>
+                  <TextInput 
+                    style={styles.inputBox}
+                    textAlign='left'
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    value={this.state.name}
+                    onChangeText={(input) => this.setState({name: input, editButtonDisabled: false})}
+                    />
+                </View>
+                <View style={styles.rowsView} >
+                  <Text style={styles.rows}>Interests: </Text>
+                </View>
+                { this.interests() }
+                <View style={styles.passwordRowsView}> 
+                    <View style={styles.passwordButtonStyle}>
+                      <Button 
+                        borderRadius={5}
+                        buttonStyle={styles.buttonPass}
+                        textStyle={styles.buttonText}
+                        title={this.state.passButtonText}
+                        loading={this.state.loadingPass}
+                        loadingProps={{ color: "#111111" }}
+                        onPress={this.openPasswordChange}
+                      />
+                      { this.passwordButton() }
+                    </View>
+                    { this.changePassword() }
+                    <View style={styles.errorView} >
+                      <Text style={styles.error} >
+                        {this.state.error}
+                      </Text>
+                    </View>
                 </View>
               </View>
-            </View>
+            </KeyboardAwareScrollView>
           }
           </View>
         </HeaderView>
+
     );
   }
 }
@@ -293,34 +358,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
-
-
-
-/*
-<CheckBox 
-              style={styles.individualInterests}
-              title='interest1'
-              checked={this.state.checked1}
-              onPress={() => this.setState({ checked1: !this.state.checked1 })}
-            />
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest2'
-              checked={this.state.checked2}
-              onPress={() => this.setState({ checked2: !this.state.checked2 })}
-            />
-          </View>
-          <View style={styles.individualInterestsRow} >
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest3'
-              checked={this.state.checked3}
-              onPress={() => this.setState({ checked3: !this.state.checked3 })}
-            />
-            <CheckBox 
-              style={styles.individualInterests}
-              title='interest4'
-              checked={this.state.checked4}
-              onPress={() => this.setState({ checked4: !this.state.checked4 })}
-            />
-*/
