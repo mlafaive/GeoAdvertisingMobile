@@ -1,10 +1,12 @@
 import React from 'react';
 import { Text, View, ScrollView, TextInput } from 'react-native';
-import { Button, Icon } from 'react-native-elements';
+import { Button, Icon, CheckBox } from 'react-native-elements';
 
 import DatePicker from 'react-native-datepicker';
 
 import PropTypes from 'prop-types';
+
+import { GET } from '../../fetch_wrapper/FetchWrapper.js';
 
 import styles from './Styles.js';
 
@@ -19,12 +21,72 @@ class OfferForm extends React.Component {
       end: null,
       loading: true
     };
+    GET('/interests')
+    .then((res) => {
+      let new_interests = res.interests;
+      
+      for (var i = 0; i < new_interests.length; i++) {
+        new_interests[i].checked = false;
+      }
+      this.setState({
+        interests: new_interests,
+        loading: false
+      });
+    })
+    .catch((err) => {
+      console.warn(err);
+    });
+
+    this.handle_check = (i) => {
+      return () => {
+        let current = this.state.interests;
+        current[i].checked = !current[i].checked;
+        this.setState({ interests: current});
+      }
+    }
+
+    this.interests = () => {
+      let items = [];
+      for (var i = 0; i < this.state.interests.length; i += 2) {
+        items.push(
+          <View style={styles.individualInterestsRow} key={i}>
+            { !(i + 1 < this.state.interests.length) && 
+              <View style={styles.spacer}></View>
+            }
+            <CheckBox 
+              containerStyle={styles.individualInterests}
+              title={this.state.interests[i].name}
+              checked={this.state.interests[i].checked}
+              onPress={this.handle_check(i)}
+            />
+            { i + 1 < this.state.interests.length ?
+              <CheckBox 
+                containerStyle={styles.individualInterests}
+                title={this.state.interests[i + 1].name}
+                checked={this.state.interests[i + 1].checked}
+                onPress={this.handle_check(i + 1)}
+              />
+              :
+              <View style={styles.spacer}></View>
+            }
+          </View>
+        );
+      }
+      return items;
+    }
+
     this.submit = () => {
+      let new_interests = [];
+      for (var i = 0; i < this.state.interests.length; i++) {
+        if (this.state.interests[i].checked) {
+          new_interests.push(this.state.interests[i].id);
+        }
+      } 
       this.props.onSave({
         start_time: this.state.start,
         end_time: this.state.end,
         description: this.state.description,
-        interests: this.state.interests
+        interests: new_interests
       });
     }
   }
@@ -48,8 +110,6 @@ class OfferForm extends React.Component {
                 multiline
                 style={styles.input}
                 textAlign='left'
-                autoCapitalize='none'
-                autoCorrect={false}
                 placeholder="Short description of offer..."
                 value={this.state.description}
                 onChangeText={(input) => this.setState({description: input})}
@@ -59,9 +119,11 @@ class OfferForm extends React.Component {
               <DatePicker
                 style={styles.date}
                 date={this.state.start}
+                minDate={new Date()}
+                maxDate={this.state.end}
                 placeholder="Start Time"
                 mode="datetime"
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DDThh:mmTZD"
                 confirmBtnText="Select"
                 cancelBtnText="Cancel"
                 onDateChange={(date) => {this.setState({start: date})}}
@@ -69,14 +131,19 @@ class OfferForm extends React.Component {
               <DatePicker
                 style={styles.date}
                 date={this.state.end}
+                minDate={this.state.start}
                 placeholder="End Time"
                 mode="datetime"
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DDThh:mm:ss.sTZD"
                 confirmBtnText="Select"
                 cancelBtnText="Cancel"
                 onDateChange={(date) => {this.setState({end: date})}}
               />
             </View>
+            <View style={styles.interestsHeader} >
+              <Text style={styles.interestsHeaderText}>Tags</Text>
+            </View>
+            { this.interests() }
             <View style={styles.errorView}>
               <Text style={styles.errorText}>{this.props.error}</Text>
             </View>

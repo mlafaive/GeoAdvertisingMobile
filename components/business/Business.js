@@ -29,18 +29,25 @@ class Business extends React.Component {
 
     this.create = (state) => {
       // validate
-      POST('businesses/' + this.props.id + '/offers', state)
+      POST('/businesses/' + this.props.id + '/offers', state)
       .then((res) => {
         let offers = this.state.offers;
         offers.push(res);
         this.setState({
           form_loading: false,
-          offers: offers
+          offers: offers,
+          create: false
         });
       })
       .catch((err) => {
+        console.log(err);
         err.json().then((data) => {
           this.setState({form_error: data.error, form_loading: false})
+        })
+        .catch((json_err) => {
+          console.warn("could not parse as json");
+          console.warn(err);
+          console.warn(json_err)
         });
       });
 

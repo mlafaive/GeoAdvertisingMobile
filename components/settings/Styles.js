@@ -98,13 +98,25 @@ export default styles = StyleSheet.create({
     	height: 30,
     	flex: 1
 	},
+	interestsHeader: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		paddingTop: 10,
+		paddingBottom: 10
+	},
+	interestsHeaderText: {
+		fontSize: 18
+	},
 	individualInterestsRow: {
 		flexDirection: 'row',
-		paddingLeft: 10,
-		justifyContent: 'center',
 	},
 	individualInterests: {
-		width: 150
+		flex: 2,
+		padding: 5
+	},
+	spacer: {
+		flex: 1,
+		padding: 2.5
 	},
 	error: {
 		color: '#85144b',

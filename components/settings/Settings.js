@@ -50,7 +50,7 @@ class Settings extends React.Component {
 
           for(var i = 0; i < new_interests.length; i++) {
             for(var j = 0; j < data.interests.length; j++) {
-              if (new_interests[i].name == data.interests[j].name)
+              if (new_interests[i].id === data.interests[j].id)
                 new_interests[i].checked = true;
             }
           }
@@ -113,19 +113,24 @@ class Settings extends React.Component {
       for (var i = 0; i < this.state.interests.length; i += 2) {
         items.push(
           <View style={styles.individualInterestsRow} key={i}>
+            { i + 1 >= this.state.interests.length &&
+              <View style={styles.spacer}></View>
+            }
             <CheckBox 
               containerStyle={styles.individualInterests}
               title={this.state.interests[i].name}
               checked={this.state.interests[i].checked}
               onPress={this.handle_check(i)}
             />
-            { i + 1 < this.state.interests.length &&
+            { i + 1 < this.state.interests.length ?
               <CheckBox 
                 containerStyle={styles.individualInterests}
                 title={this.state.interests[i + 1].name}
                 checked={this.state.interests[i + 1].checked}
                 onPress={this.handle_check(i + 1)}
               />
+              :
+              <View style={styles.spacer}></View>
             }
           </View>
         );
@@ -306,8 +311,8 @@ class Settings extends React.Component {
                     onChangeText={(input) => this.setState({name: input, editButtonDisabled: false})}
                     />
                 </View>
-                <View style={styles.rowsView} >
-                  <Text style={styles.rows}>Interests: </Text>
+                <View style={styles.interestsHeader} >
+                  <Text style={styles.interestsHeaderText}>Interests</Text>
                 </View>
                 { this.interests() }
                 <View style={styles.passwordRowsView}> 
