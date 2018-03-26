@@ -8,8 +8,7 @@ export default styles = StyleSheet.create({
 	    borderBottomWidth: 1,
 	    borderBottomLeftRadius: 10,
 	    borderBottomRightRadius: 10,
-	    paddingTop: 15,
-	    paddingBottom: 15,
+	    padding: 15,
 	},
 	text: {
 		fontSize: 12.5,

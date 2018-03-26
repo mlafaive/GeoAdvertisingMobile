@@ -158,12 +158,6 @@ Menu.propTypes = {
   history: ReactRouterPropTypes.history.isRequired
 };
 
-function mapStateToProps(state) {
-  return {
-    token: state.token
-  };
-}
-
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     setAccessToken,
@@ -172,4 +166,4 @@ function mapDispatchToProps(dispatch) {
   }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, null, { withRef: true })(Menu);
+export default connect(null, mapDispatchToProps, null, { withRef: true })(Menu);

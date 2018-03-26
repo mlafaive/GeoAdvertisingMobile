@@ -3,7 +3,6 @@ import { setAccessToken } from '../actions/token.js';
 
 const base_url = 'https://geo-advertising.herokuapp.com/api';
 
-// tooling modules
 function refresh_token(method, path, body) {
   let token = store.getState().token.refresh_token;
   let url = base_url + '/refresh';
