@@ -51,4 +51,23 @@ export default styles = StyleSheet.create({
 	offers: {
 		flex: 1
 	},
+	create: {
+		position: 'absolute',
+		top: -7.5,
+		right: 15,
+		width: 30,
+		height: 30,
+		backgroundColor: '#DDDDDD'
+	},
+	createIcon: {
+		color: '#79C753'
+	},
+	createScreen: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		zIndex: 200
+	}
 });

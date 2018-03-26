@@ -1,21 +1,59 @@
 import React from 'react';
 import { Text, View, TouchableHighlight, ScrollView } from 'react-native';
-import { Icon } from 'react-native-elements';
+import { Icon, Button } from 'react-native-elements';
 import openMap from 'react-native-open-maps';
 
 import Offer from '../offer/Offer.js';
+import OfferForm from '../offer_form/OfferForm.js';
 
 import PropTypes from 'prop-types';
 
 import styles from './Styles.js';
 
+import { POST } from '../../fetch_wrapper/FetchWrapper.js';
+
+
 class Business extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      create: false,
+      form_loading: false,
+      form_error: '',
+      offers: props.offers,
     };
+
     this.maps = () => {
       openMap({ latitude: this.props.latitude, longitude: this.props.longitude });
+    }
+
+    this.create = (state) => {
+      // validate
+      POST('businesses/' + this.props.id + '/offers', state)
+      .then((res) => {
+        let offers = this.state.offers;
+        offers.push(res);
+        this.setState({
+          form_loading: false,
+          offers: offers
+        });
+      })
+      .catch((err) => {
+        err.json().then((data) => {
+          this.setState({form_error: data.error, form_loading: false})
+        });
+      });
+
+      this.setState({
+        form_loading: true,
+        form_error: ''
+      });
+    }
+
+    this.toggle = () => {
+      this.setState({
+        create: !this.state.create
+      })
     }
 
     this.render_info = () => {
@@ -35,15 +73,30 @@ class Business extends React.Component {
 
     this.render_offers = () => {
       let items = [];
-      for (let i = this.props.offers.length - 1; i >= 0; i--) {
-        items.push(<Offer key={i} {...this.props.offers[i]}/>);
+      for (let i = this.state.offers.length - 1; i >= 0; i--) {
+        items.push(<Offer key={i} {...this.state.offers[i]}/>);
       }
       return items;
     }
   }
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      offers: nextProps.offers
+    });
+  }
   render() {
     return (
         <View style={styles.container}>
+          { this.state.create && 
+            <View style={styles.createScreen}>
+              <OfferForm
+                onSave={this.create} 
+                loading={this.state.form_loading}
+                error={this.state.form_error}
+                onClose={this.toggle}
+              />
+            </View>
+          }
           <View style={styles.header}>
             <Text style={styles.headerText}>{this.props.name}</Text>
             { this.props.hasOwnProperty('close') &&
@@ -61,6 +114,14 @@ class Business extends React.Component {
             { this.render_info() }
             <View style={styles.offers}>
               <View style={styles.offerHeader}>
+                <Icon
+                  containerStyle={styles.create} 
+                  iconStyle={styles.createIcon}
+                  name='md-add-circle' 
+                  type='ionicon' 
+                  size={30}
+                  onPress={this.toggle}
+                />
                 <Text style={styles.offerHeaderText}>Offers</Text>
               </View>
               <ScrollView>

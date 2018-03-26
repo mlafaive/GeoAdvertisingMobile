@@ -33,7 +33,7 @@ export default styles = StyleSheet.create({
 	},
 	headerView: {
 		flexDirection: 'row',
-		justifyContent: 'flex-end',
+		justifyContent: 'center',
 		paddingTop: 15,
 		paddingBottom: 25
 	},

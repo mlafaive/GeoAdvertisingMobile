@@ -64,9 +64,6 @@ class Login extends React.Component {
         });
       });
       this.setState({loading: true, login_text: ''});
-      
-      //this.props.history.push('/offers');
-
     }
 
     this.create = () => {
@@ -110,8 +107,6 @@ class Login extends React.Component {
         });
       });
       this.setState({loading: true, login_text: ''});
-
-      //this.props.history.push('/offers');
     }
 
     this.submit = () => {

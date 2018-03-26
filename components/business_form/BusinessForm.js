@@ -26,7 +26,7 @@ class BusinessForm extends React.Component {
             autoCapitalize='none'
             autoCorrect={false}
             value={this.state[field]}
-            onChangeText={(input) => this.setState({[field]: input, error: ''})}
+            onChangeText={(input) => this.setState({[field]: input})}
           />
         </View>
       );
