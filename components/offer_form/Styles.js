@@ -24,8 +24,7 @@ export default styles = StyleSheet.create({
 		fontWeight: '900'
 	},
 	form: {
-		paddingLeft: 10,
-		paddingRight: 10,
+
 	},
 	label: {
 		color: '#111111',
@@ -40,17 +39,20 @@ export default styles = StyleSheet.create({
 	},
 	inputView: {
 		paddingTop: 10,
+		paddingLeft: 10,
+		paddingRight: 10,
 		flexDirection: 'row',
 		alignItems: 'baseline'
 	},
 	input: {
-	backgroundColor: '#FFFFFF',
+		backgroundColor: '#FFFFFF',
 		height: 75,
 		fontSize: 15,
+		flex: 1,
 		borderWidth: 0.5,
 		borderColor: '#d6d7da',
-		flex: 2,
-		paddingLeft: 5
+		paddingLeft: 5,
+		paddingRight: 5
 	},
 	submitView: {
 		paddingBottom: 10,
@@ -101,4 +103,7 @@ export default styles = StyleSheet.create({
 		flex: 1,
 		padding: 2.5
 	},
+	disabled: {
+		opacity: 0.5
+	}
 });

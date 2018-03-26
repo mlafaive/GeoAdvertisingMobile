@@ -68,7 +68,7 @@ export default styles = StyleSheet.create({
 		paddingTop: 15,
 	    paddingBottom: 15,
 	},
-	fullBusiness: {
+	fullScreen: {
 		position: 'absolute',
 		top: 0,
 		left: 0,

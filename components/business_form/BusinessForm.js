@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, ScrollView, TextInput } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
 
 import PropTypes from 'prop-types';
 
@@ -57,6 +57,19 @@ class BusinessForm extends React.Component {
   render() {
     return (
         <View style={styles.container}>
+          <View style={styles.header}>
+            <Text style={styles.headerText}>New Business</Text>
+            { !this.props.loading &&
+              <Icon
+                containerStyle={styles.close} 
+                iconStyle={styles.icon}
+                name='ios-close' 
+                type='ionicon' 
+                size={45}
+                onPress={this.props.onClose}
+              />
+            }
+          </View>
           <View style={styles.form}>
             { this.render_inputs() }
             <View style={styles.errorView}>
@@ -72,6 +85,8 @@ class BusinessForm extends React.Component {
                 textStyle={styles.submitText}
                 title={this.props.loading ? "" : "Save"}
                 onPress={this.submit}
+                disabled={this.props.loading}
+                disabledStyle={styles.disabled}
               />
             </View>
           </View>
@@ -81,6 +96,7 @@ class BusinessForm extends React.Component {
 }
 
 BusinessForm.propTypes = {
+  onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   error: PropTypes.string,
   loading: PropTypes.bool,

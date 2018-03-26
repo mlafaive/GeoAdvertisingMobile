@@ -82,9 +82,26 @@ class OfferForm extends React.Component {
           new_interests.push(this.state.interests[i].id);
         }
       } 
+      // example: 2016-01-04T10:34:23+01:00
+      function getParsedDate(date){
+        date = String(date).split(' ');
+        var days = String(date[1]).split('/');
+        var hours = String(date[2]);
+        return [days[2], days[0], days[1], hours[0], hours[1]];
+      }
+
+      let start = null;
+      if (this.state.start !== null) {
+        start =  new Date(Date.UTC(...getParsedDate(this.state.start)));
+      }
+      let end = null;
+      if (this.state.end !== null) {
+        end =  new Date(Date.UTC(...getParsedDate(this.state.end)));
+      }
+
       this.props.onSave({
-        start_time: this.state.start,
-        end_time: this.state.end,
+        start_time: start,
+        end_time: end,
         description: this.state.description,
         interests: new_interests
       });
@@ -95,6 +112,7 @@ class OfferForm extends React.Component {
        <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.headerText}>New Offer</Text>
+            { !this.props.loading &&
               <Icon
                 containerStyle={styles.close} 
                 iconStyle={styles.icon}
@@ -103,6 +121,7 @@ class OfferForm extends React.Component {
                 size={45}
                 onPress={this.props.onClose}
               />
+            }
           </View>
           <View style={styles.form}>
             <View key={0} style={styles.inputView}>
@@ -123,7 +142,7 @@ class OfferForm extends React.Component {
                 maxDate={this.state.end}
                 placeholder="Start Time"
                 mode="datetime"
-                format="YYYY-MM-DDThh:mmTZD"
+                format="ddd MM/DD/YYYY hh:mm A"
                 confirmBtnText="Select"
                 cancelBtnText="Cancel"
                 onDateChange={(date) => {this.setState({start: date})}}
@@ -134,7 +153,7 @@ class OfferForm extends React.Component {
                 minDate={this.state.start}
                 placeholder="End Time"
                 mode="datetime"
-                format="YYYY-MM-DDThh:mm:ss.sTZD"
+                format="ddd MM/DD/YYYY hh:mm A"
                 confirmBtnText="Select"
                 cancelBtnText="Cancel"
                 onDateChange={(date) => {this.setState({end: date})}}
@@ -157,6 +176,8 @@ class OfferForm extends React.Component {
                 textStyle={styles.submitText}
                 title={this.props.loading ? "" : "Save"}
                 onPress={this.submit}
+                disabled={this.props.loading}
+                disabledStyle={styles.disabled}
               />
             </View>
           </View>

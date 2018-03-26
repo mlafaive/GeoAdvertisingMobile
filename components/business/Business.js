@@ -28,6 +28,27 @@ class Business extends React.Component {
     }
 
     this.create = (state) => {
+      if (state.description.length === 0){
+        this.setState({
+          form_error: 'must enter a description'
+        });
+        return;
+      } 
+      if (state.start_time === null || state.end_time === null){
+        this.setState({
+          form_error: 'must enter start and end time'
+        });
+        return;
+      }
+
+      if (state.start_time < new Date() || state.start_time > state.end_time){
+        this.setState({
+          form_error: 'must enter valid start and end times'
+        });
+        return;
+      }
+      state.start_time = state.start_time.toUTCString();
+      state.end_time = state.end_time.toUTCString();
       // validate
       POST('/businesses/' + this.props.id + '/offers', state)
       .then((res) => {
@@ -59,7 +80,8 @@ class Business extends React.Component {
 
     this.toggle = () => {
       this.setState({
-        create: !this.state.create
+        create: !this.state.create,
+        form_error: ''
       })
     }
 

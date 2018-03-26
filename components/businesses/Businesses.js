@@ -116,59 +116,6 @@ class Businesses extends React.Component {
         });
       });
     };
-
-    this.render_create = () => {
-      let items = [];
-
-      if (!this.state.create) {
-        items.push(
-          <View key={0} style={styles.headerView}>
-            <Button
-                raised
-                borderRadius={5}
-                containerViewStyle={styles.buttonCont}
-                buttonStyle={styles.submit}
-                textStyle={styles.submitText}
-                title="Create New"
-                onPress={this.create}
-                iconRight={{
-                  containerStyle: styles.icon, 
-                  name: 'md-add-circle', 
-                  type: 'ionicon', 
-                  size: 20
-                }}
-            />
-          </View>
-        );
-      }
-      else {
-        items.push(
-          <View key={0} style={styles.cancelView}>
-            <Button
-              raised
-              borderRadius={5}
-              containerViewStyle={styles.buttonCont}
-              buttonStyle={styles.cancel}
-              textStyle={styles.cancelText}
-              title="Cancel"
-              onPress={this.cancel}
-            />
-          </View>
-        );
-
-        items.push(
-          <View key={1}>
-            <BusinessForm 
-              onSave={this.create_business} 
-              loading={this.state.form_loading}
-              error={this.state.form_error}
-            />
-          </View>
-        );
-      };
-
-      return items;
-    }
   }
   render() {
     return (
@@ -179,14 +126,40 @@ class Businesses extends React.Component {
             </View>
             :
             <View style={styles.content}>
-              { this.render_create() }
+              <View key={0} style={styles.headerView}>
+                <Button
+                    raised
+                    borderRadius={5}
+                    containerViewStyle={styles.buttonCont}
+                    buttonStyle={styles.submit}
+                    textStyle={styles.submitText}
+                    title="Create New"
+                    onPress={this.create}
+                    iconRight={{
+                      containerStyle: styles.icon, 
+                      name: 'md-add-circle', 
+                      type: 'ionicon', 
+                      size: 20
+                    }}
+                />
+              </View>
               <ScrollView>
                 { this.render_businesses() }
               </ScrollView>
             </View>
           }
+          { this.state.create && 
+            <View style={styles.fullScreen}>
+              <BusinessForm
+                onSave={this.create_business} 
+                loading={this.state.form_loading}
+                error={this.state.form_error}
+                onClose={this.cancel}
+              />
+            </View>
+          }
           { this.state.open !== null &&
-            <View style={styles.fullBusiness}>
+            <View style={styles.fullScreen}>
               <Business 
                 {...this.state.businesses[this.state.open]} 
                 close={() => this.setState({ open: null })}
