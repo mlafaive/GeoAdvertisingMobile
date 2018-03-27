@@ -44,8 +44,8 @@ class Business extends React.Component {
           });
         }
       }
-      else if (!_props.businesses.businesses.hasOwnProperty(_props.id)) {
-        GET('/businesses/' + _props.id)
+      else if (!_props.businesses.businesses.hasOwnProperty(_props.match.params.id)) {
+        GET('/businesses/' + _props.match.params.id)
         .then((data) => {
           this.setState({
             business: data,
@@ -64,13 +64,13 @@ class Business extends React.Component {
       }
       else if (rerender) {
         this.setState({
-          business: _props.businesses.businesses[_props.id],
+          business: _props.businesses.businesses[_props.match.params.id],
           loading: false,
           editable: true
         })
       }
       else {
-        this.state.business = _props.businesses.businesses[_props.id];
+        this.state.business = _props.businesses.businesses[_props.match.params.id];
         this.state.loading = false;
         this.state.editable = true;
       }
@@ -105,9 +105,9 @@ class Business extends React.Component {
       state.start_time = state.start_time.toUTCString();
       state.end_time = state.end_time.toUTCString();
       // validate
-      POST('/businesses/' + this.props.id + '/offers', state)
+      POST('/businesses/' + this.props.match.params.id + '/offers', state)
       .then((res) => {
-        this.props.addOffer(this.props.id, res);
+        this.props.addOffer(this.props.match.params.id, res);
         this.setState({
           form_loading: false,
           create: false
@@ -128,6 +128,10 @@ class Business extends React.Component {
         form_loading: true,
         form_error: ''
       });
+    }
+
+    this.close = () => {
+      this.props.history.goBack();
     }
 
     this.toggle = () => {
@@ -155,13 +159,13 @@ class Business extends React.Component {
     this.render_offers = () => {
       let items = [];
       for (let i = this.state.business.offers.length - 1; i >= 0; i--) {
-        items.push(<Offer key={i} {...this.state.business.offers[i]}/>);
+        items.push(<Offer key={i} {...this.state.business.offers[i]} history={this.props.history}/>);
       }
       return items;
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.id !== this.props.id) {
+    if (nextProps.match.params.id !== this.props.match.params.id) {
       this.get_info(nextProps);
     }
   }
@@ -186,7 +190,7 @@ class Business extends React.Component {
               name='md-arrow-back' 
               type='ionicon' 
               size={30}
-              onPress={this.props.close}
+              onPress={this.close}
             />
           </View>
           { this.state.loading ? 
@@ -220,11 +224,6 @@ class Business extends React.Component {
     );
   }
 }
-
-Business.propTypes = {
-  close: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
-};
 
 function mapStateToProps(state) {
   return {

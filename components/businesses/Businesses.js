@@ -28,9 +28,7 @@ class Businesses extends React.Component {
     };
 
     this.open = (index) => {
-      return () => this.setState({
-        open: index
-      });
+      return () => this.props.history.push('/businesses/' + index);
     }
 
     this.render_businesses = () => {
@@ -156,14 +154,6 @@ class Businesses extends React.Component {
                 loading={this.state.form_loading}
                 error={this.state.form_error}
                 onClose={this.cancel}
-              />
-            </View>
-          }
-          { this.state.open !== null &&
-            <View style={styles.fullScreen}>
-              <Business 
-                id={this.state.open}
-                close={() => this.setState({ open: null })}
               />
             </View>
           }
