@@ -5,6 +5,10 @@ export default styles = StyleSheet.create({
 	    flex: 1,
 	    backgroundColor: '#DDDDDD',
 	},
+	loader: {
+		flex: 1,
+		justifyContent: 'center'
+	},
 	info: {
 		paddingLeft: 10,
 		paddingTop: 10,

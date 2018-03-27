@@ -11,6 +11,9 @@ import Businesses from './components/businesses/Businesses.js';
 import { Provider } from 'react-redux';
 import store from './store/Store.js';
 
+ // this.props.history.goBack();
+ // this.props.history.push('/route');
+
 export default class App extends React.Component {
   render() {
     return (

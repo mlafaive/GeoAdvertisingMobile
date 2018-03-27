@@ -8,8 +8,8 @@ import BusinessForm from '../business_form/BusinessForm.js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setAccessToken } from '../../actions/token.js';
 import { setEmail } from '../../actions/email.js';
+import { setBusinesses } from '../../actions/businesses.js';
 
 import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
@@ -22,7 +22,6 @@ class Businesses extends React.Component {
     this.state = {
       loading: true,
       create: false,
-      businesses: [],
       form_loading: false,
       form_error: '',
       open: null
@@ -36,33 +35,37 @@ class Businesses extends React.Component {
 
     this.render_businesses = () => {
       var items = [];
-      for (var i = this.state.businesses.length - 1; i >= 0; i--) {
+      this.props.businesses.each((i, b) => {
         items.push(
           <View key={i} style={styles.business}>
             <TouchableHighlight
               style={styles.businessOpen}
               underlayColor='#AAAAAA'
-              onPress={this.open(i)}
+              onPress={this.open(b.id)}
             >
-              <Text style={styles.businessText}>{this.state.businesses[i].name}</Text>
+              <Text style={styles.businessText}>{b.name}</Text>
             </TouchableHighlight>
           </View>
         );
-      }
+      });
       return items;
     }
-
-    let url = '/users/' + this.props.email + '/businesses';
-    GET(url)
-    .then((data) => {
-      this.setState({
-        businesses: data.businesses,
-        loading: false
+    if (this.props.businesses === null || !this.props.businesses.hasOwnProperty('businesses')) {
+      let url = '/users/' + this.props.email + '/businesses';
+      GET(url)
+      .then((data) => {
+        this.props.setBusinesses(data.businesses);
+        this.setState({
+          loading: false
+        });
+      })
+      .catch((err) => {
+        console.warn(err);
       });
-    })
-    .catch((err) => {
-      console.warn(err);
-    });
+    }
+    else {
+      this.state.loading = false;
+    }
 
     this.create = () => {
       this.setState({
@@ -101,11 +104,9 @@ class Businesses extends React.Component {
       });
       POST('/businesses', state)
       .then((data) => {
-        let new_businesses = this.state.businesses;
-        new_businesses.push(data);
+        this.props.addBusiness(data);
         this.setState({
           form_loading: false,
-          businesses: new_businesses,
           form_error: '',
           create: false,
         });
@@ -161,7 +162,7 @@ class Businesses extends React.Component {
           { this.state.open !== null &&
             <View style={styles.fullScreen}>
               <Business 
-                {...this.state.businesses[this.state.open]} 
+                id={this.state.open}
                 close={() => this.setState({ open: null })}
               />
             </View>
@@ -173,8 +174,15 @@ class Businesses extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    email: state.email
+    email: state.email,
+    businesses: state.businesses
   };
 }
 
-export default connect(mapStateToProps)(Businesses);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setBusinesses
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Businesses);

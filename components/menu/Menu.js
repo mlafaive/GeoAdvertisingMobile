@@ -11,6 +11,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { setAccessToken, setRefreshToken } from '../../actions/token.js';
 import { setEmail } from '../../actions/email.js';
+import { clearUser } from '../../actions/user.js';
+import { clearBusinesses } from '../../actions/businesses.js';
 
 import styles from './Styles.js';
 
@@ -39,6 +41,8 @@ class Menu extends React.Component {
       this.props.setAccessToken();
       this.props.setRefreshToken();
       this.props.setEmail('');
+      this.props.clearUser();
+      this.props.clearBusinesses();
       this.props.history.push('/');
     }
 
@@ -162,7 +166,9 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     setAccessToken,
     setRefreshToken,
-    setEmail
+    setEmail,
+    clearUser,
+    clearBusinesses
   }, dispatch);
 }
 

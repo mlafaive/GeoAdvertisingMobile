@@ -2,6 +2,8 @@ import React from 'react';
 import { Text, View, ScrollView, TextInput } from 'react-native';
 import { Button, Icon, CheckBox } from 'react-native-elements';
 
+import { connect } from 'react-redux';
+
 import DatePicker from 'react-native-datepicker';
 
 import PropTypes from 'prop-types';
@@ -15,27 +17,38 @@ class OfferForm extends React.Component {
     super(props);
     this.state = {
       description: '',
-      interests: [], // once luis finishes checkboxes, 
-                     // copy into component and use for this
       start: null,
       end: null,
-      loading: true
+      loading: true,
+      interests: []
     };
-    GET('/interests')
-    .then((res) => {
-      let new_interests = res.interests;
+    if (this.props.interests === null) {
+      GET('/interests')
+      .then((res) => {
+        this.props.setInterests(res.interests);
+        let new_interests = res.interests;
+      
+        for (var i = 0; i < new_interests.length; i++) {
+          new_interests[i].checked = false;
+        }
+        this.setState({
+          interests: new_interests,
+          loading: false
+        });
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+    }
+    else {
+      this.state.loading = false;
+      let new_interests = this.props.interests;
       
       for (var i = 0; i < new_interests.length; i++) {
         new_interests[i].checked = false;
       }
-      this.setState({
-        interests: new_interests,
-        loading: false
-      });
-    })
-    .catch((err) => {
-      console.warn(err);
-    });
+      this.state.interests = new_interests;
+    }
 
     this.handle_check = (i) => {
       return () => {
@@ -193,4 +206,10 @@ OfferForm.propTypes = {
   error: PropTypes.string.isRequired
 };
 
-export default OfferForm;
+function mapStateToProps(state) {
+  return {
+    interests: state.interests
+  };
+}
+
+export default connect(mapStateToProps)(OfferForm);

@@ -10,7 +10,8 @@ import styles from './Styles.js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setAccessToken } from '../../actions/token.js';
+import { setUser } from '../../actions/user.js';
+import { setInterests } from '../../actions/interests.js';
 
 import { GET, POST , PATCH } from '../../fetch_wrapper/FetchWrapper.js';
 
@@ -20,49 +21,39 @@ class Settings extends React.Component {
     this.state = {
       loadingPage: true,
       loadingName: false,
-      editingName: false,
       editNameText: ' Save ',
       editButtonDisabled: true,
-      name: '',
+      name: props.user === null ? null : props.user.name,
       changePass: false,
       loadingPass: false,
       passButtonText: ' Change Password ',
       error: '',
-      email: this.props.email,
       newPassword1: '',
       newPassword2: '',
       enteredOldPassword: '',
-      interests: [],
+      interests: props.user === null ? null : props.user.interests,
     };
 
 
-    this.get_info = () => {
-      GET('/interests')
-      .then((res) => {
-        let new_interests = res.interests;
-        
+    this.get_info = (interests) => {
+      GET('/users/'+this.props.email)
+      .then((data) => {
+        let new_interests = interests;
+      
         for (var i = 0; i < new_interests.length; i++) {
           new_interests[i].checked = false;
         }
 
-        GET('/users/'+this.props.email)
-        .then((data) => {
-
-          for(var i = 0; i < new_interests.length; i++) {
-            for(var j = 0; j < data.interests.length; j++) {
-              if (new_interests[i].id === data.interests[j].id)
-                new_interests[i].checked = true;
+        for(var i = 0; i < new_interests.length; i++) {
+          for(var j = 0; j < data.interests.length; j++) {
+            if (new_interests[i].id === data.interests[j].id) {
+              new_interests[i].checked = true;
             }
           }
-          this.setState({
-            name: data.name,
-            loadingPage: false,
-            interests: new_interests
-          });
-
-        })
-        .catch((err) => {
-         console.warn(err);
+        }
+        this.props.setUser({
+          name: data.name,
+          interests: new_interests
         });
       })
       .catch((err) => {
@@ -70,7 +61,18 @@ class Settings extends React.Component {
       });
     }
 
-    this.get_info();
+    if (this.props.interests === null) {
+      GET('/interests')
+      .then((res) => {
+        this.props.setInterests(res.interests);
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+    }
+    else if (props.user !== null){
+      this.state.loadingPage = false;
+    }
 
     this.editName = () => {
       this.setState({
@@ -92,6 +94,11 @@ class Settings extends React.Component {
           editNameText: ' Save ',
           loadingName: false,
           editButtonDisabled: true
+        });
+
+        this.props.setUser({
+          name: this.state.name,
+          interests: this.state.interests
         });
 
       })
@@ -262,9 +269,18 @@ class Settings extends React.Component {
           error: ''
         });
     }
-
-
-
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.interests !== null && this.props.interests === null){
+        this.get_info(nextProps.interests);
+    }
+    if (nextProps.user !== null) {
+      this.setState({
+        name: nextProps.user.name,
+        interests: nextProps.user.interests,
+        loadingPage: false
+      });
+    }
   }
   render() {
     return (
@@ -298,7 +314,7 @@ class Settings extends React.Component {
                 </View>
                 <View style={styles.rowsView}> 
                   <Text style={styles.rows}>Email: </Text>
-                  <Text style={styles.inputEmail}>{this.state.email}</Text>
+                  <Text style={styles.inputEmail}>{this.props.email}</Text>
                 </View>
                 <View style={styles.rowsView}> 
                   <Text style={styles.rows}>Name: </Text>
@@ -351,14 +367,16 @@ Settings.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    token: state.token,
-    email: state.email
+    email: state.email,
+    user: state.user,
+    interests: state.interests
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    setAccessToken
+    setUser,
+    setInterests
   }, dispatch);
 }
 

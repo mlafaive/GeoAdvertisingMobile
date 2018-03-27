@@ -1,16 +1,20 @@
 import React from 'react';
-import { Text, View, TouchableHighlight, ScrollView } from 'react-native';
+import { Text, View, TouchableHighlight, ScrollView, ActivityIndicator } from 'react-native';
 import { Icon, Button } from 'react-native-elements';
 import openMap from 'react-native-open-maps';
 
 import Offer from '../offer/Offer.js';
 import OfferForm from '../offer_form/OfferForm.js';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setBusinesses, addOffer } from '../../actions/businesses.js';
+
 import PropTypes from 'prop-types';
 
 import styles from './Styles.js';
 
-import { POST } from '../../fetch_wrapper/FetchWrapper.js';
+import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
 
 class Business extends React.Component {
@@ -20,11 +24,62 @@ class Business extends React.Component {
       create: false,
       form_loading: false,
       form_error: '',
-      offers: props.offers,
+      business: null,
+      editable: false,
+      loading: true
     };
+    this.get_info = (_props, rerender = true) => {
+      if (_props.businesses === null || !_props.businesses.hasOwnProperty('businesses')) {
+        let url = '/users/' + this.props.email + '/businesses';
+        GET(url)
+        .then((data) => {
+          this.props.setBusinesses(data.businesses);
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
+        if (rerender) {
+          this.setState({
+            loading: true
+          });
+        }
+      }
+      else if (!_props.businesses.businesses.hasOwnProperty(_props.id)) {
+        GET('/businesses/' + _props.id)
+        .then((data) => {
+          this.setState({
+            business: data,
+            loading: false,
+            editable: false
+          });
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
+        if (rerender) {
+          this.setState({
+            loading: true
+          });
+        }
+      }
+      else if (rerender) {
+        this.setState({
+          business: _props.businesses.businesses[_props.id],
+          loading: false,
+          editable: true
+        })
+      }
+      else {
+        this.state.business = _props.businesses.businesses[_props.id];
+        this.state.loading = false;
+        this.state.editable = true;
+      }
+    }
+    this.get_info(props, false);
+
 
     this.maps = () => {
-      openMap({ latitude: this.props.latitude, longitude: this.props.longitude });
+      openMap({ latitude: this.state.business.latitude, longitude: this.state.business.longitude });
     }
 
     this.create = (state) => {
@@ -52,16 +107,13 @@ class Business extends React.Component {
       // validate
       POST('/businesses/' + this.props.id + '/offers', state)
       .then((res) => {
-        let offers = this.state.offers;
-        offers.push(res);
+        this.props.addOffer(this.props.id, res);
         this.setState({
           form_loading: false,
-          offers: offers,
           create: false
         });
       })
       .catch((err) => {
-        console.log(err);
         err.json().then((data) => {
           this.setState({form_error: data.error, form_loading: false})
         })
@@ -90,10 +142,10 @@ class Business extends React.Component {
         <TouchableHighlight onPress={this.maps} underlayColor='#AAAAAA'>
           <View style={styles.info}>
             <Text style={styles.address}>
-              {this.props.store_address}
+              {this.state.business.store_address}
             </Text>
             <Text style={styles.address}>
-              {this.props.city.city_name + ", " + this.props.city.state_name}
+              {this.state.business.city.city_name + ", " + this.state.business.city.state_name}
             </Text>
           </View>
         </TouchableHighlight>
@@ -102,16 +154,16 @@ class Business extends React.Component {
 
     this.render_offers = () => {
       let items = [];
-      for (let i = this.state.offers.length - 1; i >= 0; i--) {
-        items.push(<Offer key={i} {...this.state.offers[i]}/>);
+      for (let i = this.state.business.offers.length - 1; i >= 0; i--) {
+        items.push(<Offer key={i} {...this.state.business.offers[i]}/>);
       }
       return items;
     }
   }
   componentWillReceiveProps(nextProps){
-    this.setState({
-      offers: nextProps.offers
-    });
+    if (nextProps.id !== this.props.id) {
+      this.get_info(nextProps);
+    }
   }
   render() {
     return (
@@ -127,65 +179,65 @@ class Business extends React.Component {
             </View>
           }
           <View style={styles.header}>
-            <Text style={styles.headerText}>{this.props.name}</Text>
-            { this.props.hasOwnProperty('close') &&
-              <Icon
-                containerStyle={styles.close} 
-                iconStyle={styles.icon}
-                name='md-arrow-back' 
-                type='ionicon' 
-                size={30}
-                onPress={this.props.close}
-              />
-            }
+            <Text style={styles.headerText}>{this.state.business.name}</Text>
+            <Icon
+              containerStyle={styles.close} 
+              iconStyle={styles.icon}
+              name='md-arrow-back' 
+              type='ionicon' 
+              size={30}
+              onPress={this.props.close}
+            />
           </View>
-          <View style={styles.body}>
-            { this.render_info() }
-            <View style={styles.offers}>
-              <View style={styles.offerHeader}>
-                <Icon
-                  containerStyle={styles.create} 
-                  iconStyle={styles.createIcon}
-                  name='md-add-circle' 
-                  type='ionicon' 
-                  size={30}
-                  onPress={this.toggle}
-                />
-                <Text style={styles.offerHeaderText}>Offers</Text>
-              </View>
-              <ScrollView>
-                { this.render_offers() }
-              </ScrollView>
+          { this.state.loading ? 
+            <View style={styles.loader}>
+              <ActivityIndicator size='large' color="#001f3f" />
             </View>
-          </View>
+            :
+            <View style={styles.body}>
+              { this.render_info() }
+              <View style={styles.offers}>
+                <View style={styles.offerHeader}>
+                  { this.state.editable && 
+                    <Icon
+                      containerStyle={styles.create} 
+                      iconStyle={styles.createIcon}
+                      name='md-add-circle' 
+                      type='ionicon' 
+                      size={30}
+                      onPress={this.toggle}
+                    />
+                  }
+                  <Text style={styles.offerHeaderText}>Offers</Text>
+                </View>
+                <ScrollView>
+                  { this.render_offers() }
+                </ScrollView>
+              </View>
+            </View>
+          }
         </View>
     );
   }
 }
 
 Business.propTypes = {
-  close: PropTypes.func,
+  close: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
-  name: PropTypes.string.isRequired,
-  store_address: PropTypes.string.isRequired,
-  city: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    city_name: PropTypes.string.isRequired,
-    state_name: PropTypes.string.isRequired,
-    timezone: PropTypes.string.isRequired,
-  }).isRequired,
-  latitude: PropTypes.number.isRequired,
-  longitude: PropTypes.number.isRequired,
-  offers: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    start_time: PropTypes.string.isRequired,
-    end_time: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    interests: PropTypes.arrayOf(PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired
-    })).isRequired
-  })).isRequired,
 };
 
-export default Business;
+function mapStateToProps(state) {
+  return {
+    businesses: state.businesses,
+    email: state.email
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    addOffer,
+    setBusinesses
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Business);

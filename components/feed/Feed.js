@@ -8,6 +8,10 @@ import Offer from '../offer/Offer.js';
 
 import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { setOffers } from '../../actions/businesses.js';
+
 import styles from './Styles.js';
 
 class Feed extends React.Component {
@@ -15,27 +19,31 @@ class Feed extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      offers: []
     };
 
     this.render_offers = () => {
       var items = [];
-      for (var i = 0; i < this.state.offers.length; i++) {
-        items.push(<Offer key={i} {...this.state.offers[i]}/>);
+      for (var i = this.props.businesses.offers.length - 1; i >= 0; i--) {
+        items.push(<Offer key={i} {...this.props.businesses.offers[i]}/>);
       }
       return items;
     }
 
-    GET('/offers')
-    .then((data) => {
-      this.setState({
-        offers: data.offers,
-        loading: false
+    if (props.businesses === null || !props.businesses.hasOwnProperty('offers')) {
+      GET('/offers')
+      .then((data) => {
+        this.props.setOffers(data.offers);
+        this.setState({
+          loading: false
+        });
+      })
+      .catch((err) => {
+        console.warn(err);
       });
-    })
-    .catch((err) => {
-      console.warn(err);
-    });
+    }
+    else {
+      this.state.loading = false;
+    }
   }
   render() {
     return (
@@ -58,4 +66,16 @@ Feed.propTypes = {
   history: ReactRouterPropTypes.history.isRequired
 };
 
-export default Feed;
+function mapStateToProps(state) {
+  return {
+    businesses: state.businesses
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setOffers
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Feed);
