@@ -8,8 +8,7 @@ import BusinessForm from '../business_form/BusinessForm.js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setEmail } from '../../actions/email.js';
-import { setBusinesses } from '../../actions/businesses.js';
+import { setBusinesses, addBusiness } from '../../actions/businesses.js';
 
 import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
@@ -110,6 +109,7 @@ class Businesses extends React.Component {
         });
       })
       .catch((err) => {
+        console.log(err);
         err.json().then((data) => {
           this.setState({form_error: data.error, form_loading: false})
         });
@@ -171,7 +171,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    setBusinesses
+    setBusinesses,
+    addBusiness
   }, dispatch);
 }
 

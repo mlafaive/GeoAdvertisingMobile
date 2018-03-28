@@ -7,7 +7,7 @@ export function setBusinesses(businesses) {
 
 export function addBusiness(business) {
   return {
-    type: 'SET_BUSINESSES',
+    type: 'ADD_BUSINESS',
     business: business,
   };
 }
