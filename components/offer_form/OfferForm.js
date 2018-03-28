@@ -2,7 +2,9 @@ import React from 'react';
 import { Text, View, ScrollView, TextInput } from 'react-native';
 import { Button, Icon, CheckBox } from 'react-native-elements';
 
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { setInterests } from '../../actions/interests.js';
 
 import DatePicker from 'react-native-datepicker';
 
@@ -212,4 +214,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(OfferForm);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({
+    setInterests
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OfferForm);
