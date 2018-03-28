@@ -8,9 +8,6 @@ import Offer from '../offer/Offer.js';
 
 import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-
 import styles from './Styles.js';
 
 class Feed extends React.Component {

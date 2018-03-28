@@ -70,7 +70,10 @@ class Settings extends React.Component {
         console.warn(err);
       });
     }
-    else if (props.user !== null){
+    else if (props.user == null) {
+      this.get_info(this.props.interests);
+    }
+    else {
       this.state.loadingPage = false;
     }
 
