@@ -3,6 +3,8 @@ import { Text, View, TouchableHighlight, ScrollView, ActivityIndicator } from 'r
 import { Icon, Button } from 'react-native-elements';
 import openMap from 'react-native-open-maps';
 
+import HeaderView from '../header_view/HeaderView.js';
+
 import Offer from '../offer/Offer.js';
 import OfferForm from '../offer_form/OfferForm.js';
 
@@ -20,37 +22,26 @@ import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 class Business extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       create: false,
       form_loading: false,
       form_error: '',
-      business: null,
+      business: {},
       editable: false,
       loading: true
     };
+
     this.get_info = (_props, rerender = true) => {
-      if (_props.businesses === null || !_props.businesses.hasOwnProperty('businesses')) {
-        let url = '/users/' + this.props.email + '/businesses';
-        GET(url)
-        .then((data) => {
-          this.props.setBusinesses(data.businesses);
-        })
-        .catch((err) => {
-          console.warn(err);
-        });
-        if (rerender) {
-          this.setState({
-            loading: true
-          });
-        }
-      }
-      else if (!_props.businesses.businesses.hasOwnProperty(_props.match.params.id)) {
+      if (_props.businesses === null 
+          || !_props.businesses.businesses.hasOwnProperty(_props.match.params.id)) {
+        
         GET('/businesses/' + _props.match.params.id)
         .then((data) => {
           this.setState({
             business: data,
             loading: false,
-            editable: false
+            editable: data.isOwner
           });
         })
         .catch((err) => {
@@ -171,7 +162,7 @@ class Business extends React.Component {
   }
   render() {
     return (
-        <View style={styles.container}>
+        <HeaderView style={styles.container} history={this.props.history}>
           { this.state.create && 
             <View style={styles.createScreen}>
               <OfferForm
@@ -220,7 +211,7 @@ class Business extends React.Component {
               </View>
             </View>
           }
-        </View>
+        </HeaderView>
     );
   }
 }

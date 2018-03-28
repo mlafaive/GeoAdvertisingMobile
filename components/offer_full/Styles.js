@@ -5,18 +5,20 @@ export default styles = StyleSheet.create({
 	    flex: 1,
 	    backgroundColor: '#DDDDDD',
 	},
+	loader: {
+		flex: 1,
+		justifyContent: 'center'
+	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		paddingTop: 25,
 		paddingBottom: 10,
 		backgroundColor: '#0074D9',
 	},
 	close: {
 		position: 'absolute',
-		left: 0,
-		paddingTop: 25,
-		paddingLeft: 10
+		left: 15,
+		top: -2.5
 	},
 	icon: {
 		color: '#FFFFFF',
@@ -28,5 +30,10 @@ export default styles = StyleSheet.create({
 	},
 	body: {
 		flex: 1
+	},
+	link: {
+		color: '#0074D9',
+		textDecorationLine: 'underline',
+		textDecorationColor: '#0074D9' 
 	}
 });

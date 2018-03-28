@@ -24,15 +24,13 @@ export default styles = StyleSheet.create({
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'center',
-		paddingTop: 25,
 		paddingBottom: 10,
 		backgroundColor: '#0074D9',
 	},
 	close: {
 		position: 'absolute',
-		left: 0,
-		paddingTop: 25,
-		paddingLeft: 10
+		left: 15,
+		top: -2.5
 	},
 	headerText: {
 		fontSize: 20,
