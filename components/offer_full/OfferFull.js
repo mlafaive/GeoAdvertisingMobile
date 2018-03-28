@@ -77,6 +77,7 @@ class OfferFull extends React.Component {
               <Text>End: { this.state.offer.end_time }</Text>
               <Text>Start: { this.state.offer.start_time }</Text>
               <Text>Interests: { this.interests() }</Text>
+              <Text>Am I the owner? { this.state.offer.isOwner ? "Yes" : "No" }</Text>
               <Text 
                 onPress={this.business}
                 style={styles.link}

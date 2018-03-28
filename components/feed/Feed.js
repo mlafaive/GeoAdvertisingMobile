@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, ScrollView, ActivityIndicator } from 'react-native';
+import { Text, View, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 
 import ReactRouterPropTypes from 'react-router-prop-types';
 
@@ -18,6 +18,7 @@ class Feed extends React.Component {
     super(props);
     this.state = {
       loading: true,
+      refreshing: false,
       offers: []
     };
 
@@ -35,16 +36,28 @@ class Feed extends React.Component {
       return items;
     }
 
-    GET('/offers')
-    .then((data) => {
-      this.setState({
-        loading: false,
-        offers: data.offers
+    this.get = () => {
+      GET('/offers')
+      .then((data) => {
+        this.setState({
+          loading: false,
+          offers: data.offers,
+          refreshing: false
+        });
+      })
+      .catch((err) => {
+        console.warn(err);
       });
-    })
-    .catch((err) => {
-      console.warn(err);
-    });
+    }
+    this.get();
+
+    this.refresh = () => {
+      this.setState({
+        refreshing: true
+      });
+      this.get();
+    }
+    
   }
   render() {
     return (
@@ -54,7 +67,14 @@ class Feed extends React.Component {
               <ActivityIndicator size='large' color="#001f3f" />
             </View>
             :
-            <ScrollView>
+            <ScrollView 
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.state.refreshing}
+                  onRefresh={this.refresh}
+                />
+              }
+            >
               { this.render_offers() }
             </ScrollView>
           }
