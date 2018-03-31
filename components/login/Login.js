@@ -1,6 +1,9 @@
 import React from 'react';
 import { Text, View, TextInput, TouchableHighlight } from 'react-native';
-import { Button, ButtonGroup, Icon } from 'react-native-elements';
+import { Button, Icon } from 'react-native-elements';
+import { TextField } from 'react-native-material-textfield';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 import { GET, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
 import { bindActionCreators } from 'redux';
@@ -144,9 +147,7 @@ class Login extends React.Component {
     }
 
     this.create_input = (i, placeholder, field, secured = false) => {
-      return (
-        <View key={i} style={styles.inputView}>
-            <TextInput
+             /*     <TextInput
               style={styles.input}
               textAlign='center'
               autoCapitalize='none'
@@ -155,8 +156,24 @@ class Login extends React.Component {
               value={this.state[field]}
               onChangeText={(input) => this.setState({[field]: input, error: ''})}
               secureTextEntry={secured}
-            />
-          </View>
+            />*/
+      return (
+        <TextField
+          key={i}
+          containerStyle={styles.inputView}
+          textColor='#FFFFFF'
+          tintColor='#FFFFFF'
+          baseColor='#FFFFFF'
+          inputContainerPadding={2}
+          labelHeight={20}
+          autoCapitalize='none'
+          autoCorrect={false}
+          label={placeholder}
+          value={this.state[field]}
+          onChangeText={ (input) => this.setState({ [field]: input }) }
+          secureTextEntry={secured}
+          disabled={this.state.loading}
+        />
       );
     }
 
@@ -179,44 +196,51 @@ class Login extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.iconView}>
-          <Icon 
-            reverse 
-            containerStyle={styles.icon} 
-            name='map-marker-circle' 
-            type='material-community' 
-            size={50}
-          />
-        </View>
-        { this.render_inputs() }
-        <View style={styles.errorView}>
-          <Text style={styles.errorText}>{this.state.error}</Text>
-        </View>
-        <View style={styles.submitView}>
-          <Button
-            raised
-            borderRadius={5}
-            containerViewStyle={styles.submitCont}
-            loading={this.state.loading}
-            buttonStyle={styles.submit}
-            textStyle={styles.submitText}
-            title={this.state.login_text}
-            onPress={this.submit}
-          />
-        </View>
-        <View style={styles.createView}>
-          <Text style={styles.createText}>
-            {this.state.state === state.LOGIN ? 'New?' : 'Already have an account?'}
-          </Text> 
-          <TouchableHighlight 
-            style={styles.createButton}
-            onPress={this.change_state}
-          >
-            <Text style={styles.createButtonText}>
-              {this.state.state === state.LOGIN ? 'Sign Up' : 'Login'}
-            </Text>
-          </TouchableHighlight>
-        </View>
+        <KeyboardAwareScrollView 
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          scrollEnabled={false}
+        >
+          <View style={styles.iconView}>
+            <Icon 
+              reverse 
+              containerStyle={styles.icon} 
+              name='map-marker-circle' 
+              type='material-community' 
+              size={50}
+            />
+          </View>
+          { this.render_inputs() }
+          <View style={styles.errorView}>
+            <Text style={styles.errorText}>{this.state.error}</Text>
+          </View>
+          <View style={styles.submitView}>
+            <Button
+              raised
+              borderRadius={5}
+              containerViewStyle={styles.submitCont}
+              loading={this.state.loading}
+              buttonStyle={styles.submit}
+              textStyle={styles.submitText}
+              title={this.state.login_text}
+              onPress={this.submit}
+              disabled={this.state.loading}
+            />
+          </View>
+          <View style={styles.createView}>
+            <Text style={styles.createText}>
+              {this.state.state === state.LOGIN ? 'New?' : 'Already have an account?'}
+            </Text> 
+            <TouchableHighlight 
+              style={styles.createButton}
+              onPress={this.change_state}
+              disabled={this.state.loading}
+            >
+              <Text style={styles.createButtonText}>
+                {this.state.state === state.LOGIN ? 'Sign Up' : 'Login'}
+              </Text>
+            </TouchableHighlight>
+          </View>
+        </KeyboardAwareScrollView>
         <View style={styles.footer}>
           <Text style={styles.footerText}>Mitchell LaFaive | Luis Sosa | Nathan Wernert | Anthony Opipari | Hon Kwok</Text>
           <Text style={styles.footerText}>GeoAdvertising &copy;</Text>

@@ -3,7 +3,10 @@ import { StyleSheet } from 'react-native';
 export default styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    paddingTop: 20
+  },
+  avoider: {
+    flex: 1
   },
   icon: {
     backgroundColor: '#001f3f'
@@ -14,17 +17,12 @@ export default styles = StyleSheet.create({
     justifyContent: 'center'
   },
   inputView: {
-    paddingTop: 10,
-    paddingRight: 25,
-    paddingLeft: 25,
+    marginRight: 25,
+    marginLeft: 25,
   },
   input: {
-    backgroundColor: '#FFFFFF',
-    height: 35,
-    fontSize: 15,
-    borderRadius: 10,
-    borderWidth: 0.5,
-    borderColor: '#d6d7da',
+    color: '#FFFFFF',
+    fontSize: 20
   },
   submitView: {
     paddingTop: 15,
@@ -79,7 +77,7 @@ export default styles = StyleSheet.create({
   },
   errorText: {
     color: '#85144b',
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: '900',
     fontStyle: 'italic'
   }
