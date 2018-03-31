@@ -41,7 +41,7 @@ class Login extends React.Component {
 
 
     this.login = () => {
-      if (!valid_email(this.state.email)) {
+      if (!valid_email(this.state.email.trim())) {
         this.setState({error: 'please enter a valid email'})
         return;
       }
@@ -52,7 +52,7 @@ class Login extends React.Component {
         return;
       }
       POST('/login', {
-        email: this.state.email,
+        email: this.state.email.trim(),
         password: this.state.password
       })
       .then((data) => {
@@ -72,12 +72,12 @@ class Login extends React.Component {
     this.create = () => {
       // TODO: validate here
       var name_regex = /^([a-zA-Z ]+)$/;
-      if(!name_regex.test(this.state.name)) {
+      if(!name_regex.test(this.state.name.trim())) {
         this.setState({error: 'please enter a valid name'})
         return;
       }
 
-      if (!valid_email(this.state.email)) {
+      if (!valid_email(this.state.email.trim())) {
         this.setState({error: 'please enter a valid email'})
         return;
       }
@@ -94,9 +94,9 @@ class Login extends React.Component {
       }
 
       POST('/users', {
-        email: this.state.email,
+        email: this.state.email.trim(),
         password: this.state.password,
-        name: this.state.name
+        name: this.state.name.trim()
       })
       .then((data) => {
         this.props.setAccessToken(data.access_token);
@@ -131,6 +131,7 @@ class Login extends React.Component {
           login_text: 'Sign Up',
           email: '',
           password: '',
+          error: ''
         });
       }
       else {
@@ -141,22 +142,13 @@ class Login extends React.Component {
           password: '',
           name: '',
           password2: '',
+          error: ''
         });
       }
 
     }
 
     this.create_input = (i, placeholder, field, secured = false) => {
-             /*     <TextInput
-              style={styles.input}
-              textAlign='center'
-              autoCapitalize='none'
-              autoCorrect={false}
-              placeholder={placeholder}
-              value={this.state[field]}
-              onChangeText={(input) => this.setState({[field]: input, error: ''})}
-              secureTextEntry={secured}
-            />*/
       return (
         <TextField
           key={i}

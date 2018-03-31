@@ -16,6 +16,8 @@ import store from './store/Store.js';
  // this.props.history.goBack();
  // this.props.history.push('/route');
 
+ Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+
 export default class App extends React.Component {
   render() {
     return (

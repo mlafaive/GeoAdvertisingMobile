@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, PanResponder, StyleSheet } from 'react-native';
+import { Text, View, PanResponder, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Dimensions from 'Dimensions';
 
 import { Button } from 'react-native-elements';
@@ -16,14 +16,21 @@ import { clearBusinesses } from '../../actions/businesses.js';
 
 import styles from './Styles.js';
 
-var screenSize = Dimensions.get('window').width
-var menuWidth = (screenSize*2)/3;
+const screenSize = Dimensions.get('window').width > Dimensions.get('window').height 
+                  ?  Dimensions.get('window').height : Dimensions.get('window').width
+const menuWidth = (screenSize*2)/3;
 class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false
     };
+
+    this.close = () => {
+      this.setState({
+        open: false
+      });
+    }
 
     this.settings = () => {
       this.props.history.push('/settings');
@@ -51,9 +58,7 @@ class Menu extends React.Component {
       onStartShouldSetPanResponder: (evt, gestureState) => true,
       onPanResponderMove: (event, gestureState) => {
         if (gestureState.dx < -50 && gestureState.vx < 0) {
-          this.setState({
-            open: false
-          });
+          this.close();
         }
       }
     })
@@ -121,8 +126,9 @@ class Menu extends React.Component {
           {...this._panResponder.panHandlers}
           ref={ref => { this.container = ref }}
         >
-          <View style={this.state.open ? styles.overlay : styles.hidden}>
-          </View>
+          <TouchableWithoutFeedback onPress={this.close}>
+            <View style={this.state.open ? styles.overlay : styles.hidden}></View>
+          </TouchableWithoutFeedback>
           <View style={styles.menu} ref={ref => { this.menu = ref }}>
             <Button
               containerViewStyle={styles.buttonView}
