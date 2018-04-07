@@ -97,26 +97,10 @@ class OfferForm extends React.Component {
           new_interests.push(this.state.interests[i].id);
         }
       } 
-      // example: 2016-01-04T10:34:23+01:00
-      function getParsedDate(date){
-        date = String(date).split(' ');
-        var days = String(date[1]).split('/');
-        var hours = String(date[2]);
-        return [days[2], days[0], days[1], hours[0], hours[1]];
-      }
-
-      let start = null;
-      if (this.state.start !== null) {
-        start =  new Date(Date.UTC(...getParsedDate(this.state.start)));
-      }
-      let end = null;
-      if (this.state.end !== null) {
-        end =  new Date(Date.UTC(...getParsedDate(this.state.end)));
-      }
 
       this.props.onSave({
-        start_time: start,
-        end_time: end,
+        start_time: this.state.start,
+        end_time: this.state.end,
         description: this.state.description,
         interests: new_interests
       });

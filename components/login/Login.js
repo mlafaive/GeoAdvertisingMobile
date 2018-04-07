@@ -207,7 +207,7 @@ class Login extends React.Component {
           </View>
           <View style={styles.submitView}>
             <Button
-              raised
+              raised={!this.state.loading}
               borderRadius={5}
               containerViewStyle={styles.submitCont}
               loading={this.state.loading}

@@ -19,7 +19,8 @@ export default styles = StyleSheet.create({
 		fontSize: 15,
 		color: '#0074D9',
 		textDecorationLine: 'underline',
-		textDecorationColor: '#0074D9'
+		textDecorationColor: '#0074D9',
+		textAlign: 'center'
 	},
 	header: {
 		flexDirection: 'row',

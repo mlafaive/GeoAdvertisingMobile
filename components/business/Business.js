@@ -3,6 +3,8 @@ import { Text, View, TouchableHighlight, ScrollView, ActivityIndicator } from 'r
 import { Icon, Button } from 'react-native-elements';
 import openMap from 'react-native-open-maps';
 
+import moment from 'moment';
+
 import HeaderView from '../header_view/HeaderView.js';
 
 import Offer from '../offer/Offer.js';
@@ -87,14 +89,8 @@ class Business extends React.Component {
         return;
       }
 
-      if (state.start_time < new Date() || state.start_time > state.end_time){
-        this.setState({
-          form_error: 'must enter valid start and end times'
-        });
-        return;
-      }
-      state.start_time = state.start_time.toUTCString();
-      state.end_time = state.end_time.toUTCString();
+      state.start_time = moment(state.start_time, 'ddd MM/DD/YYYY hh:mm A').format();
+      state.end_time = moment(state.end_time, 'ddd MM/DD/YYYY hh:mm A').format();
       // validate
       POST('/businesses/' + this.props.match.params.id + '/offers', state)
       .then((res) => {
@@ -174,7 +170,15 @@ class Business extends React.Component {
             </View>
           }
           <View style={styles.header}>
-            <Text style={styles.headerText}>{this.state.business.name}</Text>
+            <Text style={styles.headerText}>
+              {
+                this.state.business.hasOwnProperty('name') && this.state.business.name.length > 25 
+                ? 
+                this.state.business.name.slice(0, 25) + "..." 
+                : 
+                this.state.business.name
+              }
+            </Text>
             <Icon
               containerStyle={styles.close} 
               iconStyle={styles.icon}
