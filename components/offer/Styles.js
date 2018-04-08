@@ -13,6 +13,7 @@ export default styles = StyleSheet.create({
 	text: {
 		fontSize: 12.5,
 		fontStyle: 'italic',
-		color: '#001f3f'
+		color: '#001f3f',
+		textAlign: 'center'
 	}
 });

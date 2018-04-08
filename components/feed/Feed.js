@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, View, ScrollView, ActivityIndicator, RefreshControl } from 'react-native';
 
+import { getLocation } from '../../permissions/Permissions.js';
+
 import ReactRouterPropTypes from 'react-router-prop-types';
 
 import HeaderView from '../header_view/HeaderView.js';
@@ -34,16 +36,36 @@ class Feed extends React.Component {
     }
 
     this.get = () => {
-      GET('/offers')
-      .then((data) => {
-        this.setState({
-          loading: false,
-          offers: data.offers,
-          refreshing: false
+      let url = '/offers';
+      getLocation()
+      .then((loc) => {
+        url += "?latitude=" + loc.coords.latitude + "&longitude=" + loc.coords.longitude;
+        console.log(url);
+        GET(url)
+        .then((data) => {
+          this.setState({
+            loading: false,
+            offers: data.offers,
+            refreshing: false
+          });
+        })
+        .catch((err) => {
+          console.warn(err);
         });
       })
-      .catch((err) => {
-        console.warn(err);
+      .catch(() => {
+        alert('To see offers near you please enable location services')
+        GET(url)
+        .then((data) => {
+          this.setState({
+            loading: false,
+            offers: data.offers,
+            refreshing: false
+          });
+        })
+        .catch((err) => {
+          console.warn(err);
+        });
       });
     }
     this.get();
