@@ -18,9 +18,9 @@ class OfferForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      description: '',
-      start: null,
-      end: null,
+      description: props.offer.description,
+      start: props.offer.start_time,
+      end: props.offer.end_time,
       loading: true,
       interests: []
     };
@@ -32,6 +32,11 @@ class OfferForm extends React.Component {
       
         for (var i = 0; i < new_interests.length; i++) {
           new_interests[i].checked = false;
+          for (var j = 0; j < this.props.offer.interests.length; j++) {
+            if (this.props.offer.interests[j].id === new_interests[i].id) {
+              new_interests[i].checked = true;
+            }
+          }
         }
         this.setState({
           interests: new_interests,
@@ -48,6 +53,11 @@ class OfferForm extends React.Component {
       
       for (var i = 0; i < new_interests.length; i++) {
         new_interests[i].checked = false;
+        for (var j = 0; j < props.offer.interests.length; j++) {
+          if (props.offer.interests[j].id === new_interests[i].id) {
+            new_interests[i].checked = true;
+          }
+        }
       }
       this.state.interests = new_interests;
     }
@@ -110,7 +120,7 @@ class OfferForm extends React.Component {
     return (
        <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.headerText}>New Offer</Text>
+            <Text style={styles.headerText}>Offer</Text>
             { !this.props.loading &&
               <Icon
                 containerStyle={styles.close} 
@@ -189,8 +199,26 @@ OfferForm.propTypes = {
   onSave: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  error: PropTypes.string.isRequired
+  error: PropTypes.string.isRequired,
+  offer: PropTypes.shape({
+    description: PropTypes.string,
+    start_time: PropTypes.string,
+    end_time: PropTypes.string,
+    interests: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string
+    }))
+  })
 };
+
+OfferForm.defaultProps = {
+  offer: {
+    description: '',
+    start_time: null,
+    end_time: null,
+    interests: []
+  }
+}
 
 function mapStateToProps(state) {
   return {

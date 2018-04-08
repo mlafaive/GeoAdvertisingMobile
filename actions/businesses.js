@@ -27,6 +27,14 @@ export function addOffer(id, offer) {
   };
 }
 
+export function setOffer(id, offer) {
+  return {
+    type: 'SET_OFFER',
+    id: id,
+    offer: offer
+  };
+}
+
 export function clearBusinesses() {
   return {
     type: 'CLEAR_BUSINESSES'

@@ -188,14 +188,16 @@ class Business extends React.Component {
                 this.state.business.name
               }
             </Text>
-            <Icon
-              containerStyle={styles.close} 
-              iconStyle={styles.icon}
-              name='md-arrow-back' 
-              type='ionicon' 
-              size={30}
-              onPress={this.close}
-            />
+            { !this.state.loading &&
+              <Icon
+                containerStyle={styles.close} 
+                iconStyle={styles.icon}
+                name='md-arrow-back' 
+                type='ionicon' 
+                size={30}
+                onPress={this.close}
+              />
+            }
           </View>
           { this.state.loading ? 
             <View style={styles.loader}>

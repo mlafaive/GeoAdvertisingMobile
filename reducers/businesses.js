@@ -24,6 +24,17 @@ export function businesses(state = null, action) {
     case 'ADD_OFFER':
       state.businesses[action.id].offers.push(action.offer);
       return state;
+    case 'SET_OFFER':
+      if (state === null) {
+        return state;
+      }
+      for (var i = 0; i < state.businesses[action.id].offers.length; i++) {
+        if (state.businesses[action.id].offers[i].id === action.offer.id) {
+          state.businesses[action.id].offers[i] = action.offer;
+          break;
+        }
+      }
+      return state;
     case 'CLEAR_BUSINESSES':
       return null;
     default:

@@ -9,6 +9,14 @@ export default styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center'
 	},
+	createScreen: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		zIndex: 200
+	},
 	header: {
 		flexDirection: 'row',
 		justifyContent: 'center',
@@ -18,6 +26,11 @@ export default styles = StyleSheet.create({
 	close: {
 		position: 'absolute',
 		left: 15,
+		top: -2.5
+	},
+	edit: {
+		position: 'absolute',
+		right: 15,
 		top: -2.5
 	},
 	icon: {
@@ -31,9 +44,59 @@ export default styles = StyleSheet.create({
 	body: {
 		flex: 1
 	},
-	link: {
+	business: {
+		padding: 10,
+	},
+	businessText: {
 		color: '#0074D9',
+		fontSize: 20,
 		textDecorationLine: 'underline',
-		textDecorationColor: '#0074D9' 
+		textDecorationColor: '#0074D9',
+		textAlign: 'center' 
+	},
+	description: {
+		paddingTop: 15,
+	},
+	descriptionText: {
+		fontSize: 17.5,
+		fontWeight: '900',
+		textAlign: 'center',
+	},
+	time: {
+		paddingTop: 15
+	},
+	timeText: {
+		fontSize: 15,
+		textAlign: 'center',
+		paddingTop: 5
+	},
+	interests: {
+		paddingTop: 25
+	},
+	innerInterests: {
+		flexDirection: 'row',
+	},
+	interest: {
+		flex: 1,
+		margin: 5,
+		paddingTop: 2.5,
+		paddingBottom: 2.5,
+		paddingLeft: 5,
+		paddingRight: 5,
+		borderStyle: 'solid',
+		borderRadius: 5
+	},
+	filler: {
+		flex: 1,
+		margin: 5,
+		paddingTop: 2.5,
+		paddingBottom: 2.5,
+		paddingLeft: 5,
+		paddingRight: 5,
+	},
+	interestText: {
+		fontSize: 13,
+		fontWeight: '800',
+		textAlign: 'center'
 	}
 });
