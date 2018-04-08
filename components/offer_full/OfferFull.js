@@ -4,6 +4,8 @@ import { Icon, Button } from 'react-native-elements';
 
 import HeaderView from '../header_view/HeaderView.js';
 
+import { colors } from '../../Constants.js';
+
 import { connect } from 'react-redux';
 
 import { GET } from '../../fetch_wrapper/FetchWrapper.js';
@@ -77,7 +79,7 @@ class OfferFull extends React.Component {
               <Text>End: { this.state.offer.end_time }</Text>
               <Text>Start: { this.state.offer.start_time }</Text>
               <Text>Interests: { this.interests() }</Text>
-              <Text>Am I the owner? { this.state.offer.isOwner ? "Yes" : "No" }</Text>
+              <Text>Am I the owner? { this.state.editable ? "Yes" : "No" }</Text>
               <Text 
                 onPress={this.business}
                 style={styles.link}
