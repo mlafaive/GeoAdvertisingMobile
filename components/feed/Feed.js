@@ -23,7 +23,7 @@ class Feed extends React.Component {
 
     this.render_offers = () => {
       var items = [];
-      for (var i = this.state.offers.length - 1; i >= 0; i--) {
+      for (var i = 0; i < this.state.offers.length; i++) {
         items.push(
           <Offer 
             key={i} 
@@ -40,7 +40,6 @@ class Feed extends React.Component {
       getLocation()
       .then((loc) => {
         url += "?latitude=" + loc.coords.latitude + "&longitude=" + loc.coords.longitude;
-        console.log(url);
         GET(url)
         .then((data) => {
           this.setState({

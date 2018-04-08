@@ -101,6 +101,7 @@ class Business extends React.Component {
         });
       })
       .catch((err) => {
+        console.warn(err);
         err.json().then((data) => {
           this.setState({form_error: data.error, form_loading: false})
         })
@@ -146,7 +147,15 @@ class Business extends React.Component {
     this.render_offers = () => {
       let items = [];
       for (let i = this.state.business.offers.length - 1; i >= 0; i--) {
-        items.push(<Offer key={i} {...this.state.business.offers[i]} history={this.props.history}/>);
+        items.push(
+          <Offer 
+            key={i} 
+            id={this.state.business.offers[i].id}
+            description={this.state.business.offers[i].description}
+            interests={this.state.business.offers[i].interests} 
+            history={this.props.history}
+          />
+        );
       }
       return items;
     }
@@ -172,9 +181,9 @@ class Business extends React.Component {
           <View style={styles.header}>
             <Text style={styles.headerText}>
               {
-                this.state.business.hasOwnProperty('name') && this.state.business.name.length > 25 
+                this.state.business.hasOwnProperty('name') && this.state.business.name.length > 20 
                 ? 
-                this.state.business.name.slice(0, 25) + "..." 
+                this.state.business.name.slice(0, 17) + "..." 
                 : 
                 this.state.business.name
               }
