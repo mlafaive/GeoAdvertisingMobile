@@ -23,6 +23,9 @@ export default styles = StyleSheet.create({
 		color: '#FFFFFF',
 		fontWeight: '900'
 	},
+	icon: {
+		color: '#FFFFFF',
+	},
 	form: {
 
 	},

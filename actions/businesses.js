@@ -35,6 +35,14 @@ export function setOffer(id, offer) {
   };
 }
 
+export function deleteOffer(bid, oid) {
+  return {
+    type: 'DELETE_OFFER',
+    bid: bid,
+    oid: oid
+  };
+}
+
 export function clearBusinesses() {
   return {
     type: 'CLEAR_BUSINESSES'

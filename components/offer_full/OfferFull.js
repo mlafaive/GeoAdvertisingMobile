@@ -10,9 +10,9 @@ import { colors } from '../../Constants.js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setOffer } from '../../actions/businesses.js';
+import { setOffer, deleteOffer } from '../../actions/businesses.js';
 
-import { GET, PATCH } from '../../fetch_wrapper/FetchWrapper.js';
+import { GET, PATCH, DELETE } from '../../fetch_wrapper/FetchWrapper.js';
 
 import PropTypes from 'prop-types';
 
@@ -25,6 +25,7 @@ class OfferFull extends React.Component {
       editing: false,
       loading: true,
       form_loading: false,
+      deleting: false,
       form_error: '',
       offer: {}
     };
@@ -93,7 +94,7 @@ class OfferFull extends React.Component {
       this.props.history.push('/businesses/' + this.state.offer.business.id);
     }
 
-    this.toggle = () => {
+    this.toggle_edit = () => {
       this.setState({
         editing: !this.state.editing
       });
@@ -142,6 +143,27 @@ class OfferFull extends React.Component {
         form_error: ''
       });
     }
+
+    this.toggle_delete = () => {
+      this.setState({
+        deleting: !this.state.deleting
+      });
+    }
+
+    this.delete = () => {
+      this.setState({
+        loading: true,
+        deleting: false
+      });
+      DELETE('/offers/' + this.props.match.params.id)
+      .then(() => {
+        this.props.deleteOffer(this.state.offer.business.id, this.state.offer.id);
+        this.close();
+      })
+      .catch((err) => {
+        console.warn(err);
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.id !== nextProps.match.params.id) {
@@ -155,12 +177,12 @@ class OfferFull extends React.Component {
     return (
         <HeaderView style={styles.container} history={this.props.history}>
           { this.state.editing && 
-            <View style={styles.createScreen}>
+            <View style={styles.fullScreen}>
               <OfferForm
                 onSave={this.save} 
                 loading={this.state.form_loading}
                 error={this.state.form_error}
-                onClose={this.toggle}
+                onClose={this.toggle_edit}
                 offer={{
                   description: this.state.offer.description,
                   interests: this.state.offer.interests,
@@ -168,6 +190,36 @@ class OfferFull extends React.Component {
                   end_time: moment(this.state.offer.end_time).format('ddd MM/DD/YYYY hh:mm A')
                 }}
               />
+            </View>
+          }
+          { this.state.deleting && 
+            <View style={styles.fullScreen}>
+              <View style={styles.underlay}/>
+              <View style={styles.overlay}>
+                <View style={styles.modal}>
+                  <Text style={styles.modalText}>Are you sure?</Text>
+                  <View style={styles.buttons}>
+                    <View style={styles.cancel}>
+                      <TouchableHighlight 
+                        onPress={this.toggle_delete} 
+                        underlayColor='#AAAAAA'
+                        style={styles.cancelTouch}
+                      >
+                          <Text style={styles.modalButtonText}>Cancel</Text>
+                      </TouchableHighlight>
+                    </View>
+                    <View style={styles.delete}>
+                      <TouchableHighlight 
+                        onPress={this.delete} 
+                        underlayColor='#AAAAAA'
+                        style={styles.deleteTouch}
+                      >
+                          <Text style={styles.modalButtonText}>Delete</Text>
+                      </TouchableHighlight>
+                    </View>
+                  </View>
+                </View>
+              </View>
             </View>
           }
           <View style={styles.header}>
@@ -188,7 +240,7 @@ class OfferFull extends React.Component {
                 iconStyle={styles.icon}
                 name='edit' 
                 type='feather' 
-                onPress={this.toggle}
+                onPress={this.toggle_edit}
               />
             }
           </View>
@@ -215,6 +267,14 @@ class OfferFull extends React.Component {
                 </Text>
               </View>
               { this.render_interests() }
+              <View style={styles.deleteIcon}>
+                <Icon 
+                  name='delete' 
+                  type='material-community' 
+                  size={35}
+                  onPress={this.toggle_delete}
+                />
+              </View>
             </View>
           }
         </HeaderView>
@@ -230,7 +290,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    setOffer
+    setOffer,
+    deleteOffer
   }, dispatch);
 }
 

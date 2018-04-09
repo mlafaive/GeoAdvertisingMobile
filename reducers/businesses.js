@@ -35,6 +35,18 @@ export function businesses(state = null, action) {
         }
       }
       return state;
+    case 'DELETE_OFFER':
+      if (state === null) {
+        return state;
+      }
+      let new_offers = [];
+      for (var i = 0; i < state.businesses[action.bid].offers.length; i++) {
+        if (state.businesses[action.bid].offers[i].id !== action.oid) {
+          new_offers.push(state.businesses[action.bid].offers[i]);
+        }
+      }
+      state.businesses[action.bid].offers = new_offers;
+      return state;
     case 'CLEAR_BUSINESSES':
       return null;
     default:

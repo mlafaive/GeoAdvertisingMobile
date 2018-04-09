@@ -9,7 +9,7 @@ export default styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center'
 	},
-	createScreen: {
+	fullScreen: {
 		position: 'absolute',
 		top: 0,
 		left: 0,
@@ -43,6 +43,12 @@ export default styles = StyleSheet.create({
 	},
 	body: {
 		flex: 1
+	},
+	deleteIcon: {
+		flex: 1,
+		justifyContent: 'flex-end',
+		alignItems: 'flex-end',
+		padding: 10
 	},
 	business: {
 		padding: 10,
@@ -97,6 +103,66 @@ export default styles = StyleSheet.create({
 	interestText: {
 		fontSize: 13,
 		fontWeight: '800',
+		textAlign: 'center'
+	},
+	underlay: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		bottom: 0,
+		opacity: 0.5,
+		backgroundColor: '#111111',
+	},
+	overlay: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+	},
+	modal: {
+		backgroundColor: '#FFFFFF',
+		borderRadius: 10,
+		borderColor: '#111111',
+		borderWidth: 1,
+		borderStyle: 'solid',
+	},
+	modalText: {
+		fontSize: 25,
+		fontWeight: 'bold',
+		padding: 25,
+	},
+	buttons: {
+		flexDirection: 'row',
+	},
+	cancel: {
+		flex: 1,
+		borderColor: '#111111',
+		borderTopWidth: 1,
+		borderBottomWidth: 0,
+		borderLeftWidth: 0,
+		borderRightWidth: 1,
+		borderStyle: 'solid',
+		borderBottomLeftRadius: 10,
+	},
+	cancelTouch: {
+		borderBottomLeftRadius: 10,
+	},
+	delete: {
+		flex: 1,
+		borderTopWidth: 1,
+		borderBottomWidth: 0,
+		borderLeftWidth: 0,
+		borderRightWidth: 0,
+		borderColor: '#111111',
+		borderStyle: 'solid',
+		borderBottomRightRadius: 10,
+	},
+	deleteTouch: {
+		borderBottomRightRadius: 10,
+	},
+	modalButtonText: {
+		padding: 10,
+		fontSize: 20,
 		textAlign: 'center'
 	}
 });
