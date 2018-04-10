@@ -45,7 +45,7 @@ export default styles = StyleSheet.create({
 		flex: 1
 	},
 	deleteIcon: {
-		flex: 1,
+		height: 40,
 		justifyContent: 'flex-end',
 		alignItems: 'flex-end',
 		padding: 10
@@ -61,7 +61,7 @@ export default styles = StyleSheet.create({
 		textAlign: 'center' 
 	},
 	description: {
-		paddingTop: 15,
+		paddingTop: 5,
 	},
 	descriptionText: {
 		fontSize: 17.5,
@@ -69,7 +69,7 @@ export default styles = StyleSheet.create({
 		textAlign: 'center',
 	},
 	time: {
-		paddingTop: 15
+		paddingTop: 5
 	},
 	timeText: {
 		fontSize: 15,
@@ -77,7 +77,7 @@ export default styles = StyleSheet.create({
 		paddingTop: 5
 	},
 	interests: {
-		paddingTop: 25
+		paddingTop: 15
 	},
 	innerInterests: {
 		flexDirection: 'row',
@@ -164,5 +164,36 @@ export default styles = StyleSheet.create({
 		padding: 10,
 		fontSize: 20,
 		textAlign: 'center'
+	},
+	accept: {
+		flex: 1,
+		margin: 10,
+		padding: 15,
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderColor: '#111111',
+		borderWidth: 3,
+		borderStyle: 'dashed',
+	},
+	acceptCont: {
+		borderRadius: 5,
+	},
+	acceptButton: { 
+		borderRadius: 5,
+		paddingTop: 5,
+		paddingBottom: 5,
+		paddingRight: 10,
+		paddingLeft: 10,
+		backgroundColor: '#79C753',
+	},
+	acceptText: {
+		fontSize: 20,
+		color: '#001f3f'
+	},
+	acceptedText: {
+		fontSize: 17.5,
+		fontWeight: '900',
+		textAlign: 'center',
+		color: '#0074D9'
 	}
 });

@@ -12,7 +12,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { setOffer, deleteOffer } from '../../actions/businesses.js';
 
-import { GET, PATCH, DELETE } from '../../fetch_wrapper/FetchWrapper.js';
+import { GET, PATCH, DELETE, POST } from '../../fetch_wrapper/FetchWrapper.js';
 
 import PropTypes from 'prop-types';
 
@@ -24,6 +24,7 @@ class OfferFull extends React.Component {
     this.state = {
       editing: false,
       loading: true,
+      loading_accept: false,
       form_loading: false,
       deleting: false,
       form_error: '',
@@ -164,6 +165,29 @@ class OfferFull extends React.Component {
         console.warn(err);
       });
     }
+
+    this.render_accept = () => {
+      if (this.state.offer.accepted) {
+        return;
+      }
+      return;
+
+    }
+
+    this.accept = () => {
+      this.setState({
+        loading_accept: true,
+      });
+      POST('/offers/'+ this.props.match.params.id + '/accept')
+      .then((res) => {
+        let new_offer = this.state.offer;
+        new_offer.accepted = true;
+        this.setState({
+          loading_accept: false,
+          offer: new_offer
+        });
+      });
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (this.props.match.params.id !== nextProps.match.params.id) {
@@ -267,6 +291,27 @@ class OfferFull extends React.Component {
                 </Text>
               </View>
               { this.render_interests() }
+              <View style={styles.accept}>
+                {
+                  this.state.offer.accepted 
+                  ?
+                  <Text style={styles.acceptedText}>
+                   Show this when paying to recieve your deal!
+                  </Text>
+                  :
+                  <Button
+                    raised={!this.state.loading_accept}
+                    borderRadius={5}
+                    containerViewStyle={styles.acceptCont}
+                    loading={this.state.loading_accept}
+                    buttonStyle={styles.acceptButton}
+                    textStyle={styles.acceptText}
+                    title={!this.state.loading_accept ? 'Accept This Offer' : ''}
+                    onPress={this.accept}
+                    disabled={this.state.loading_accept}
+                  />
+                }
+              </View>
               <View style={styles.deleteIcon}>
                 <Icon 
                   name='delete' 
