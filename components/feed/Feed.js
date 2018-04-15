@@ -111,10 +111,6 @@ class Feed extends React.Component {
                   </Text>
                   {`\n`}
                   <Text style={styles.bullet}>
-                    {`\t\u2022 Increase the search radius`}
-                  </Text>
-                  {`\n`}
-                  <Text style={styles.bullet}>
                     {`\t\u2022 Go somewhere else to find deals!`}
                   </Text>
                 </Text>
